@@ -1,18 +1,27 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="content-body">
+  </div>
+  <div class="row" style="width:calc(100vw - 200px); position: absolute; right: 0px; z-index: 1;">
+    <img class="col" src="../assets//lizard2.png" alt="">
+    <img class="col" src="../assets//lizard1.png" alt="">
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
 export default {
   name: 'HomeView',
   components: {
-    HelloWorld
   }
 }
 </script>
+
+<style>
+.content-body {
+  position: absolute;
+  right: 0px;
+  width: calc(100vw - 200px);
+  max-height: 600px;
+  height: 55vh;
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.7);
+}</style>
