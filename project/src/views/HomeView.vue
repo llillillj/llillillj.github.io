@@ -1,7 +1,7 @@
 <template>
     <div v-bind:class="{'mobile-style': isMobile, 'pc-style': !isMobile}" class="bg-black float-right">
       <q-img v-bind:class="{'mobile-style-img': isMobile, 'pc-style-img': !isMobile}" src="../assets/lizard1.png">
-        <div class="absolute-full text-right">
+        <div class="absolute-full text-right text-subtitle">
           <span class="q-mr-sm">兵庫県立大学 社会情報科学部 社会情報科学科</span><br>
           <span class="q-mr-sm">データ分析研究会</span>
           <a class="q-mr-lg" target="_blank" href="https://twitter.com/dakken205">-> Twitter</a><br>
