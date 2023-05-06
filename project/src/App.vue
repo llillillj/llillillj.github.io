@@ -1,36 +1,48 @@
 <template>
   <q-layout view="lHh Lpr lFf" class="bg-black text-white" style="font-weight: 1;">
-    <q-page-container>
+    <q-page-container style="width: 100vw;">
       <!-- <q-header class="bg-black flex flex-center q-pa-lg text-h">KoyamaAkiyuki</q-header> -->
-      <q-header class="h flex flex-center q-pa-lg text-h"
-        style="background-color: rgba(0, 0, 0, 0.8)">Akiyuki Koyama</q-header>
-      <div id="fade" class="bg-transparent column q-ml-xl q-mt-sm q-gutter-y-xs"
-        style="position: fixed; width: 300px; opacity: 1;">
-        <router-link to="/" class="col">About Me</router-link>
-        <router-link to="/works" class="col">Works</router-link>
-      </div>
-      <router-view></router-view>
+      <template v-if="isMobile">
+        <q-header class="h row q-pa-sm text-h" style="background-color: rgba(0, 0, 0, 0.8)">
+          <div id="fade" class="bg-transparent col q-ml-sm column q-pa-sm q-gutter-y-xs">
+            <router-link to="/" class="col">About Me</router-link>
+            <router-link to="/works" class="col">Works</router-link>
+          </div>
+          <div class="col text-center q-pa-sm">Akiyuki Koyama</div>
+        </q-header>
+      </template>
+      <template v-else>
+        <q-header class="h flex flex-center q-pa-lg text-h" style="min-width: ;background-color: rgba(0, 0, 0, 0.8)">Akiyuki
+          Koyama</q-header>
+        <div id="fade" class="bg-transparent column q-ml-xl q-mt-sm q-gutter-y-xs"
+          style="position: fixed; width: 300px; opacity: 1; z-index: 10;">
+          <router-link to="/" class="col">About Me</router-link>
+          <router-link to="/works" class="col">Works</router-link>
+        </div>
+      </template>
+      <router-view :isMobile="isMobile"></router-view>
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-import { ref } from 'vue'
 export default {
   name: 'LayoutDefault',
 
   components: {
   },
 
-  setu() {
+  data() {
     return {
-      leftDrawerOpen: ref(false),
-      isTransparent: ref(true),
-      lastScrollPosition: ref(0),
-      scrollThreshold: ref(50) // スクロール位置の閾値
+      isMobile: false,
+      leftDrawerOpen: false,
+      isTransparent: true,
+      lastScrollPosition: 0,
+      scrollThreshold: 50 // スクロール位置の閾値
     }
   },
   mounted() {
+    this.checkUserAgent();
     window.addEventListener('scroll', this.handleScroll)
   },
   beforeUnmount() {
@@ -45,6 +57,12 @@ export default {
         this.isTransparent = false
       }
       this.lastScrollPosition = currentScrollPosition
+    },
+    checkUserAgent() {
+      const userAgent = navigator.userAgent;
+      if (/iPhone|iPad|iPod|Android/i.test(userAgent)) {
+        this.isMobile = true;
+      }
     }
   }
 }
