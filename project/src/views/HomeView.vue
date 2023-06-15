@@ -38,16 +38,12 @@ export default {
 .pc-style {
   bottom: 0px;
   overflow: hidden;
-  width: 650px;
+  width: min(650px, calc(100vh - 85px));
   margin-left: 200px;
 }
 .mobile-style {
   width: 100vw;
   display: flex;
   justify-content: center;
-}
-
-.mobile-style {
-
 }
 </style>

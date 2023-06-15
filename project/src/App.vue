@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf" class="bg-black text-white" style="font-weight: 1;">
-    <q-page-container style="width: 100vw;">
+    <q-page-container>
       <!-- <q-header class="bg-black flex flex-center q-pa-lg text-h">KoyamaAkiyuki</q-header> -->
       <template v-if="isMobile">
         <q-header class="h row q-pa-sm text-h" style="background-color: rgba(0, 0, 0, 0.8)">
@@ -14,10 +14,11 @@
       <template v-else>
         <q-header class="h flex flex-center q-pa-lg text-h" style="min-width: ;background-color: rgba(0, 0, 0, 0.8)">Akiyuki
           Koyama</q-header>
-        <div id="fade" class="bg-transparent column q-ml-xl q-mt-sm q-gutter-y-xs"
-          style="position: fixed; width: 300px; opacity: 1; z-index: 10;">
+        <div id="fade" class="bg-transparent column q-pl-xl q-mt-sm q-gutter-y-xs"
+          style="position: fixed; width: 150px; opacity: 1; z-index: 10;">
           <router-link to="/" class="col">About Me</router-link>
           <router-link to="/works" class="col">Works</router-link>
+          <router-link to="/coderef" class="col">Code Refs</router-link>
         </div>
       </template>
       <router-view :isMobile="isMobile"></router-view>
@@ -112,5 +113,9 @@ a.router-link-exact-active {
 
 .a.transparent {
   background-color: rgba(255, 255, 255, 0.5);
+}
+
+.hidden-overflow {
+  overflow: hidden;
 }
 </style>
