@@ -1,2 +1,0 @@
-"use strict";(self["webpackChunkproject"]=self["webpackChunkproject"]||[]).push([[443],{486:function(t,e,r){r.r(e),r.d(e,{default:function(){return f}});var n=r(9269);const s={style:{}},c=(0,n._)("div",{class:"text-subtitle1 q-mt-lg",style:{"margin-left":"230px"}}," There is no works yet... ",-1),u=[c];function i(t,e){return(0,n.wg)(),(0,n.iD)("div",s,u)}var l=r(7617);const o={},a=(0,l.Z)(o,[["render",i]]);var f=a}}]);
-//# sourceMappingURL=about.4180eca6.js.map
