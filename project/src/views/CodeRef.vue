@@ -45,6 +45,9 @@
 
     <div>
       <ul class="uk-nav-default q-mr-xl q-pt-md" uk-nav>
+        <template v-if="references.length === 0">
+          <h6 class="text-grey-7">There is no items...<br>Condition: {{ this.searchedCondition }}</h6>
+        </template>
         <template v-for="snipet of references" v-bind:key="snipet">
           <li class="uk-parent">
             <a class="text-white"> {{ snipet.title }} <span uk-nav-parent-icon></span></a>
@@ -82,6 +85,7 @@ export default {
       queryDepartment: "",
       queryBehavior: "",
       queryLibrary: "",
+      searchedCondition: [],
     };
   },
   async mounted() {
@@ -116,6 +120,7 @@ export default {
         pushItem.code = pushItem.code.replace(/\n/g, '<br>');
         this.references.push(pushItem);
       });
+      this.searchedCondition = JSON.stringify([this.queryDepartment, this.queryBehavior, this.queryLibrary])
     },
   },
 };
