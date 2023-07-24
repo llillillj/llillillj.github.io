@@ -124,7 +124,7 @@ export default {
   },
   methods: {
     test() {
-      console.log(this.refCode)
+      console.log(this.refCode);
     },
     nofitAdded() {
       this.notifTitle = "Add new Reference";
@@ -175,7 +175,7 @@ export default {
             this.notifCanceled("Unexpected error occured");
           });
       } else {
-        this.notifCanceled("You have to fill all form");
+        this.notifCanceled("You have to fill all content");
       }
     },
     initQuery() {
@@ -195,12 +195,9 @@ export default {
   max-width: 500px;
   min-width: 300px;
 }
-.formPrefix {
-  width: 50px;
-}
 .card-frame {
   width: 350px;
-  border: solid white;
+  border: solid 1px white;
   border-radius: 8px;
 }
 </style>

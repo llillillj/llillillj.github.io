@@ -21,13 +21,18 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/WorkView.vue')
   },
   {
+    path: '/works/admin',
+    name: 'wordAdmin',
+    component: () => import(/* webpackChunkName: "about" */ '../views/WorkAdmin.vue')
+  },
+  {
     path: '/coderef',
     name: 'coderef',
     component: () => import(/* webpackChunkName: "about" */ '../views/CodeRef.vue')
   },
   {
     path: '/coderef/admin',
-    name: 'admin',
+    name: 'codeAdmin',
     component: () => import(/* webpackChunkName: "about" */ '../views/CodeRefAdmin.vue')
   },
 ]
