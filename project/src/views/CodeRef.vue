@@ -50,7 +50,6 @@
             <a class="text-white"> {{ snipet.title }} <span uk-nav-parent-icon></span></a>
             <ul class="uk-nav-sub">
               <div v-html="snipet.code"></div>
-              <!-- <div v-html="markdownContent"></div> -->
             </ul>
           </li>
         </template>
@@ -58,10 +57,6 @@
     </div>
   </div>
 </template>
-
-<!-- 
-
-<style></style> -->
 
 <script>
 import {
@@ -71,22 +66,10 @@ import {
   getDocs,
   getFirestore,
 } from "firebase/firestore";
-// import { getFileList } from '@/libs/getFileList'
-import { marked } from "marked";
-import { HighlightJS } from "highlight.js/lib/core";
-import "highlight.js/styles/default.css";
-
-// 使用するハイライト言語を選択する
-import javascript from "highlight.js/lib/languages/javascript";
-import python from "highlight.js/lib/languages/python";
-
-import "highlight.js/styles/vs.css";
-
-HighlightJS.registerLanguage("javascript", javascript);
-HighlightJS.registerLanguage("python", python);
 
 const db = getFirestore();
 const queryOptionRef = doc(db, "codeRef", "queryOption");
+
 
 export default {
   data() {
@@ -103,7 +86,6 @@ export default {
   },
   async mounted() {
     try {
-      await this.fetchMarkdown();
       await this.setOptions();
     } catch (err) {
       console.error(err);
@@ -111,18 +93,6 @@ export default {
   },
 
   methods: {
-    async fetchMarkdown() {
-      const response = await fetch("/blog/memo.md");
-      const data = await response.text();
-      this.markdownContent = marked(data, {
-        highlight: function (code, lang) {
-          if (lang && HighlightJS.getLanguage(lang)) {
-            return HighlightJS.highlight(lang, code).value;
-          }
-          return HighlightJS.highlightAuto(code).value;
-        },
-      });
-    },
     async setOptions() {
       const queryOptionSnapshot = await getDoc(queryOptionRef);
       const queryOption = queryOptionSnapshot.data();
@@ -142,7 +112,9 @@ export default {
       );
       const snapshot = await getDocs(ref);
       snapshot.forEach((qdoc) => {
-        this.references.push(qdoc.data());
+        let pushItem = qdoc.data()
+        pushItem.code = pushItem.code.replace(/\n/g, '<br>');
+        this.references.push(pushItem);
       });
     },
   },

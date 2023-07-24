@@ -55,6 +55,15 @@
         outlined
         type="textarea"
         label="Code"
+      />
+      <q-input
+        v-model="description"
+        class="q-ma-sm"
+        color="purple-12"
+        dark
+        outlined
+        type="textarea"
+        label="Description"
         @keyup.shift.enter="sendRef"
       >
         <q-btn
@@ -63,13 +72,14 @@
           style="height: 30px; position: absolute; right: 0px; bottom: 5px"
         ></q-btn>
       </q-input>
+      <q-btn @click="test">test</q-btn>
       <!-- </template> -->
     </div>
   </div>
 
   <template>
-    <q-dialog v-model="notif" position="top">
-      <q-card style="width: 350px">
+    <q-dialog v-model="notif" class="float-center" position="top">
+      <q-card class="bg-black card-frame">
         <q-card-section class="row items-center no-wrap">
           <div>
             <div class="text-weight-bold">{{ notifTitle }}</div>
@@ -103,6 +113,7 @@ export default {
       queryLibrary: "",
       refTitle: "",
       refCode: "",
+      description: "",
       notif: false,
       notifTitle: "",
       notifMessage: "",
@@ -112,6 +123,19 @@ export default {
     this.setOptions();
   },
   methods: {
+    test() {
+      console.log(this.refCode)
+    },
+    nofitAdded() {
+      this.notifTitle = "Add new Reference";
+      this.notifMessage = "Your new Reference has been registerd successfully.";
+      this.notif = true;
+    },
+    notifCanceled(message) {
+      this.notifTitle = "Failed add new Reference";
+      this.notifMessage = message;
+      this.notif = true;
+    },
     async setOptions() {
       const queryOptionSnapshot = await getDoc(queryOptionRef);
       const queryOption = queryOptionSnapshot.data();
@@ -119,36 +143,49 @@ export default {
       this.queryOptionBehavior = queryOption.behavior;
       this.queryOptionLibrary = queryOption.library;
     },
+    checkFullfilled() {
+      const flag =
+        this.queryDepartment !== "" &&
+        this.queryBehavior !== "" &&
+        this.queryLibrary !== "" &&
+        this.refCode !== "" &&
+        this.description !== "";
+      return flag;
+    },
     sendRef() {
-      const colRef = collection(
-        db,
-        "codeRef",
-        "reference",
-        this.queryDepartment,
-        this.queryBehavior,
-        this.queryLibrary
-      );
-      addDoc(colRef, { title: this.refTitle, code: this.refCode })
-        .then(() => {
-          this.notifTitle = "Add new Reference";
-          this.notifMessage =
-            "Your new Reference has been registerd successfully.";
-          this.notif = true;
-          this.initQuery()
+      if (this.checkFullfilled()) {
+        const colRef = collection(
+          db,
+          "codeRef",
+          "reference",
+          this.queryDepartment,
+          this.queryBehavior,
+          this.queryLibrary
+        );
+        addDoc(colRef, {
+          title: this.refTitle,
+          code: this.refCode,
+          description: this.description,
         })
-        .catch(() => {
-          this.notifTitle = "Add new Reference";
-          this.notifMessage = "Your new Reference has been failured.";
-          this.notif = true;
-        });
+          .then(() => {
+            this.nofitAdded();
+            this.initQuery();
+          })
+          .catch(() => {
+            this.notifCanceled("Unexpected error occured");
+          });
+      } else {
+        this.notifCanceled("You have to fill all form");
+      }
     },
     initQuery() {
-      this.queryDepartment = ""
-      this.queryBehavior = ""
-      this.queryLibrary = ""
-      this.refTitle = ""
-      this.refCode = ""
-    }
+      this.queryDepartment = "";
+      this.queryBehavior = "";
+      this.queryLibrary = "";
+      this.refTitle = "";
+      this.refCode = "";
+      this.description = "";
+    },
   },
 };
 </script>
@@ -160,5 +197,10 @@ export default {
 }
 .formPrefix {
   width: 50px;
+}
+.card-frame {
+  width: 350px;
+  border: solid white;
+  border-radius: 8px;
 }
 </style>
