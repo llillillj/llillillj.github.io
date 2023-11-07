@@ -1,18 +1,19 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <q-page padding class="home flex flex-center">
+    <div class="q-gutter-md flex flex-center column">
+      <div>
+        <img width="300" alt="Vue logo" src="@/assets/not_implemented/lizard01.png">
+      </div>
+      <div class="text-h2">My Home</div>
+    </div>
+  </q-page>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
 export default {
   name: 'HomeView',
   components: {
-    HelloWorld
   }
 }
 </script>

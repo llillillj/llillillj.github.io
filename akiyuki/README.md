@@ -3,6 +3,7 @@
 ## Project setup
 ```
 npm install
+npm add quasar
 ```
 
 ### Compiles and hot-reloads for development
