@@ -15,7 +15,7 @@
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered class="bg-grey-8 text-grey-3">
       <q-list>
         <q-item-label header class="text-grey-3">Links</q-item-label>
-        <q-item clickable class="text-grey-3" tag="a" target="_blank" to="/">
+        <q-item clickable class="text-grey-3" to="/">
           <q-item-section avatar>
             <q-icon name="home" />
           </q-item-section>
