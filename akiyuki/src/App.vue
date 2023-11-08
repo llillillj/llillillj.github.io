@@ -23,6 +23,14 @@
             <q-item-label>Home</q-item-label>
           </q-item-section>
         </q-item>
+        <q-item clickable class="text-grey-3" target="_self" to="/snake">
+          <q-item-section avatar>
+            <q-icon name="sports_esports" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>SnakeGame</q-item-label>
+          </q-item-section>
+        </q-item>
         <q-item clickable tag="a" target="_blank" href="https://github.com/llillillj">
           <q-item-section avatar>
             <q-icon name="code" />
@@ -42,22 +50,20 @@
         </q-item>
       </q-list>
     </q-drawer>
-
+    
     <q-page-container class="bg-dark text-white" style="font-family: 'Murecho', sans-serif;">
-      <HomeView />
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
 import { ref } from 'vue'
-import HomeView from './views/HomeView.vue'
 
 export default {
   name: 'LayoutDefault',
 
   components: {
-    HomeView
   },
 
   setup() {
@@ -70,4 +76,9 @@ export default {
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Murecho&display=swap');
+
+.border {
+  border: solid 2px #666;
+  border-radius: 8px;
+}
 </style>
