@@ -5,7 +5,7 @@
       <div
         class="content flex flex-center q-pl-xs q-pr-xs q-pt-sm q-pb-sm bg-dark q-gutter-y-md"
       >
-          <GameDisplay />
+        <GameDisplay @on-gameover="onGameover" />
         <q-btn color="white" class="text-black" @click="play = false"
           >Quit game</q-btn
         >
@@ -20,6 +20,22 @@
       <p>The snake will graw on getting light green items.</p>
     </template>
   </q-page>
+
+  <q-dialog v-model="gameover">
+    <q-card>
+      <q-card-section>
+        <div class="text-h6">GAME OVER</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        You collided with a wall, so please close the game and restart it.
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn flat label="EXIT" class="text-white bg-black" @click="play = false" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -30,13 +46,19 @@ export default {
   components: {
     GameDisplay,
   },
+  emits: ["is-gameover"],
   data() {
     return {
       play: false,
+      gameover: false,
     };
   },
   mounted() {},
-  methods: {},
+  methods: {
+    onGameover() {
+      this.gameover = true
+    }
+  },
 };
 </script>
 
@@ -57,5 +79,4 @@ export default {
   border: solid white 1px;
   border-radius: 100%;
 }
-
 </style>

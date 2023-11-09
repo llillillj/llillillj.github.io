@@ -4,10 +4,7 @@
       <div class="row">
         <template v-for="(v, x) in row" v-bind:key="v">
           <div class="column">
-            <div
-              class="cell"
-              :class="isPlayer(x, y) ? 'player' : cellClass[v]"
-            ></div>
+            <div class="cell" :class="getClass(x, y, v)"></div>
           </div>
         </template>
       </div>
@@ -26,7 +23,7 @@ export default {
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
-        [1, 0, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -40,10 +37,13 @@ export default {
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       ],
 
-      cellClass: ["path", "block", "food"],
+      cellClass: ["path", "block"],
       playerHeadState: [2, 4],
       playerStates: [[2, 4]],
+      foodState: [4, 2],
       direction: "→",
+      zeroIndices: null,
+      gameover: false,
     };
   },
   mounted() {
@@ -51,6 +51,26 @@ export default {
     setInterval(this.movePlayer, 250);
   },
   methods: {
+    getClass(x, y, v) {
+      if (this.isPlayer(x, y)) return "player";
+      else if (this.isFood(x, y)) return "food";
+      else return this.cellClass[v];
+    },
+
+    isFood(x, y) {
+      return this.foodState[0] == y && this.foodState[1] == x;
+    },
+
+    isPlayer(x, y) {
+      for (const i in this.playerStates) {
+        const player_state = this.playerStates[i];
+        if (player_state[0] == y && player_state[1] == x) {
+          return true;
+        }
+      }
+      return false;
+    },
+
     onKeydown(event) {
       switch (event.keyCode) {
         case 38: // 上矢印キー
@@ -88,14 +108,15 @@ export default {
     handleState(tmp_state) {
       const [y, x] = tmp_state;
       if (this.mapData[y][x] == 1) {
-        return;
-      } else if (this.mapData[y][x] == 2) {
+        this.$emit('on-gameover')
+      } else if (this.foodState[0] == y && this.foodState[1] == x) {
         const pushItem = JSON.parse(
           JSON.stringify(this.playerStates.slice(-1)[0])
         );
         this.playerStates.push(pushItem);
         this.handleHeadState(tmp_state);
         this.handleStates();
+        this.changeFoodState();
       } else {
         this.handleHeadState(tmp_state);
         this.handleStates();
@@ -110,14 +131,31 @@ export default {
         JSON.parse(JSON.stringify(this.playerHeadState))
       );
     },
-    isPlayer(x, y) {
-      for (const i in this.playerStates) {
-        const player_state = this.playerStates[i];
-        if (player_state[0] == y && player_state[1] == x) {
-          return true;
+    changeFoodState() {
+      this.foodState = this.getRandomZeroIndex();
+    },
+    to_gameover() {
+      this.gameover = true;
+    },
+    getRandomZeroIndex() {
+      if (this.zeroIndices === null) {
+        this.zeroIndices = this.getZeroIndices();
+      }
+      return this.zeroIndices[
+        Math.floor(Math.random() * this.zeroIndices.length)
+      ];
+    },
+    getZeroIndices() {
+      const array = JSON.parse(JSON.stringify(this.mapData));
+      const zeroIndices = [];
+      for (let i = 0; i < array.length; i++) {
+        for (let j = 0; j < array[i].length; j++) {
+          if (array[i][j] === 0) {
+            zeroIndices.push([i, j]);
+          }
         }
       }
-      return false;
+      return zeroIndices;
     },
   },
 };
