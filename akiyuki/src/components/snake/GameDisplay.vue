@@ -142,7 +142,7 @@ export default {
 }
 
 .path {
-  background-color: rgb(232, 232, 232);
+  background-color: rgb(206, 206, 206);
 }
 
 .food {

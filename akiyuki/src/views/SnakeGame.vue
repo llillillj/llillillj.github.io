@@ -58,22 +58,4 @@ export default {
   border-radius: 100%;
 }
 
-.cell {
-  width: 14px;
-  height: 14px;
-  margin: 1px;
-  border-radius: 4px;
-}
-
-.block {
-  background-color: black;
-}
-
-.path {
-  background-color: grey;
-}
-
-.player {
-  background-color: #77f;
-}
 </style>
