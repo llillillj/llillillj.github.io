@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+// import SnakeGame from "../views/SnakeGame.vue"
+// import NotFound from "../views/NotFound.vue"
 
 const routes = [
   {
@@ -9,7 +11,7 @@ const routes = [
   },
   {
     path: '/snake',
-    name: 'snake',
+    name: 'SnakeGame',
     component: () => import(/* webpackChunkName: "snake" */ '../views/SnakeGame.vue')
   },
   {
@@ -20,10 +22,10 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
-  {
-    path: "/:catchAll(.*)*",
-    component: () => import('../views/NotFound.vue'),
-  }
+  // {
+  //   path: "/:catchAll(.*)*",
+  //   component: () => import('../views/NotFound.vue'),
+  // }
 ]
 
 const router = createRouter({

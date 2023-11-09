@@ -39,6 +39,14 @@
             <q-item-label>Github</q-item-label>
           </q-item-section>
         </q-item>
+        <q-item clickable tag="a" target="_blank" href="https://www.kaggle.com/akiyukikouyama">
+          <q-item-section avatar>
+            <q-icon name="data_usage" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Kaggle</q-item-label>
+          </q-item-section>
+        </q-item>
         <q-item clickable tag="a" target="_blank" href="https://twitter.com/llillillillj">
           <q-item-section avatar>
             <q-icon name="rss_feed" />
@@ -50,7 +58,7 @@
         </q-item>
       </q-list>
     </q-drawer>
-    
+
     <q-page-container class="bg-dark text-white" style="font-family: 'Murecho', sans-serif;">
       <router-view />
     </q-page-container>
