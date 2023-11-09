@@ -47,13 +47,13 @@ export default {
 <style>
 .content {
     background-color: white;
-    width: 350px;
+    width: 340px;
     border-radius: 8px;
 }
 
 .cell {
-    width: 15px;
-    height: 15px;
+    width: 14px;
+    height: 14px;
     margin: 1px;
     border-radius: 4px;
 }
