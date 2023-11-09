@@ -92,10 +92,10 @@ export default {
       } else if (this.mapData[y][x] == 2) {
         const pushItem = JSON.parse(
           JSON.stringify(this.playerStates.slice(-1)[0])
-          );
-          this.playerStates.unshift(pushItem);
-          this.handleHeadState(tmp_state);
-          this.handleStates();
+        );
+        this.playerStates.push(pushItem);
+        this.handleHeadState(tmp_state);
+        this.handleStates();
       } else {
         this.handleHeadState(tmp_state);
         this.handleStates();
