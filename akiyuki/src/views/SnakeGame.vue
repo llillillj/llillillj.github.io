@@ -1,7 +1,7 @@
 <template>
     <q-page class="flex flex-center column q-pa-md">
         <p class="text-h3">Snake Game</p>
-        <div class="content flex flex-center q-pa-sm">
+        <div class="content flex flex-center q-pl-xs q-pr-xs q-pt-sm q-pb-sm">
             <template v-for="row in mapData" v-bind:key="row">
                 <div class="row">
                     <template v-for="v in row" v-bind:key="v">
@@ -47,7 +47,7 @@ export default {
 <style>
 .content {
     background-color: white;
-    width: 370px;
+    width: 350px;
     border-radius: 8px;
 }
 
