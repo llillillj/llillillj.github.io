@@ -40,6 +40,14 @@ export default {
       cellClass: ["path", "block"],
       playerHeadState: [2, 4],
       playerStates: [[2, 4]],
+
+      enemyHeadState: [10, 6],
+      enemyStates: [[10, 6], [9, 6], [8, 6]],
+
+      playerMoveInterval: null,
+      enemyMoveInterval: null,
+      enemyExpandInterval: null,
+
       foodState: [4, 2],
       direction: "→",
       zeroIndices: null,
@@ -48,13 +56,26 @@ export default {
   },
   mounted() {
     window.addEventListener("keydown", this.onKeydown);
-    setInterval(this.movePlayer, 250);
+    this.playerMoveInterval = setInterval(this.movePlayer, 250);
+    this.enemyMoveInterval = setInterval(this.moveEnemy, 250);
+    this.enemyExpandInterval = setInterval(this.expandEnemy, 10000);
   },
   methods: {
     getClass(x, y, v) {
-      if (this.isPlayer(x, y)) return "player";
+      if (this.isPlayerHead(x, y)) return "player-head"
+      else if (this.isPlayer(x, y)) return "player";
+      else if (this.isEnemyHead(x, y)) return "enemy-head";
+      else if (this.isEnemy(x, y)) return "enemy"
       else if (this.isFood(x, y)) return "food";
       else return this.cellClass[v];
+    },
+
+    isPlayerHead(x, y) {
+      return this.playerHeadState[0] == y && this.playerHeadState[1] == x
+    },
+
+    isEnemyHead(x, y) {
+      return this.enemyHeadState[0] == y && this.enemyHeadState[1] == x
     },
 
     isFood(x, y) {
@@ -65,6 +86,16 @@ export default {
       for (const i in this.playerStates) {
         const player_state = this.playerStates[i];
         if (player_state[0] == y && player_state[1] == x) {
+          return true;
+        }
+      }
+      return false;
+    },
+
+    isEnemy(x, y) {
+      for (const i in this.enemyStates) {
+        const enemy_state = this.enemyStates[i];
+        if (enemy_state[0] == y && enemy_state[1] == x) {
           return true;
         }
       }
@@ -105,10 +136,12 @@ export default {
       }
       this.handleState(tmp_state);
     },
+
     handleState(tmp_state) {
       const [y, x] = tmp_state;
-      if (this.mapData[y][x] == 1) {
-        this.$emit('on-gameover')
+      if ((this.mapData[y][x] == 1) || (this.isEnemy(x, y))) {
+        this.clearAllInterval()
+        this.$emit('on-gameover', this.playerStates.length)
       } else if (this.foodState[0] == y && this.foodState[1] == x) {
         const pushItem = JSON.parse(
           JSON.stringify(this.playerStates.slice(-1)[0])
@@ -131,6 +164,60 @@ export default {
         JSON.parse(JSON.stringify(this.playerHeadState))
       );
     },
+
+    moveEnemy() {
+      var random_idx = Math.floor( Math.random() * 4 );
+      var tmp_state = JSON.parse(JSON.stringify(this.enemyHeadState))
+      switch (random_idx) {
+        case 0:
+          tmp_state[0]--;
+          break;
+        case 1:
+          tmp_state[0]++;
+          break;
+        case 2:
+          tmp_state[1]--;
+          break;
+        case 3:
+          tmp_state[1]++;
+          break;
+      }
+      this.enemyHandleState(tmp_state)
+    },
+    enemyHandleState(tmp_state) {
+      const [y, x] = tmp_state;
+      if (this.mapData[y][x] == 1) {
+        return
+      } else if (this.isPlayer(x, y)) {
+        this.clearAllInterval()
+        this.$emit('on-gameover', this.playerStates.length)
+      } else {
+        this.enemyHandleHeadState(tmp_state);
+        this.enemyHandleStates();
+      }
+    },
+    enemyHandleHeadState(tmp_state) {
+      this.enemyHeadState = tmp_state;
+    },
+    enemyHandleStates() {
+      this.enemyStates.pop();
+      this.enemyStates.unshift(
+        JSON.parse(JSON.stringify(this.enemyHeadState))
+      );
+    },
+    expandEnemy() {
+      const pushItem = JSON.parse(
+          JSON.stringify(this.enemyStates.slice(-1)[0])
+        );
+      this.enemyStates.push(pushItem);
+    },
+
+    clearAllInterval() {
+      clearInterval(this.playerMoveInterval)
+      clearInterval(this.enemyMoveInterval)
+      clearInterval(this.enemyExpandInterval)
+    },
+
     changeFoodState() {
       this.foodState = this.getRandomZeroIndex();
     },
@@ -188,6 +275,18 @@ export default {
 }
 
 .player {
+  background-color: #55c;
+}
+
+.player-head {
   background-color: #22a;
+}
+
+.enemy {
+  background-color: #c55;
+}
+
+.enemy-head {
+  background-color: #a22;
 }
 </style>

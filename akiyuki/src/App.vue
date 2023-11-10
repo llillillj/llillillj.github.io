@@ -5,7 +5,7 @@
         <q-btn flat dense round @click="leftDrawerOpen = !leftDrawerOpen" aria-label="Menu" :icon="leftDrawerOpen ? 'close' : 'menu'" />
 
         <q-toolbar-title>
-          Akiyuki Ko-yama
+          Akiyuki
         </q-toolbar-title>
 
         <div>University of Hyogo<br>Social Information Science</div>
