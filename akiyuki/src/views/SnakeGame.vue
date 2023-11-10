@@ -14,6 +14,7 @@
                 direction keys.
             </p>
             <p>The snake will graw on getting light green items, and get gameover on touch to red snake or wall.</p>
+            <q-table flat bordered dark hide-bottom class="q-mt-md" :rows="scoreBoard" :columns="columns" />
         </template>
     </q-page>
 
@@ -40,6 +41,10 @@
 <script>
 import GameDisplay from "../components/snake/GameDisplay.vue";
 
+import { getFirestore, collection, getDocs, query } from "firebase/firestore"
+
+const db = getFirestore()
+
 export default {
     name: "SnakeGame",
     components: {
@@ -51,13 +56,44 @@ export default {
             play: false,
             gameover: false,
             score: 0,
+
+            scoreBoard: [
+                { rank: 1, username: "user1", score: 19 },
+                { rank: 2, username: "user2", score: 18 },
+                { rank: 3, username: "user3", score: 17 },
+                { rank: 4, username: "user4", score: 16 },
+                { rank: 5, username: "user5", score: 15 },
+            ],
+            columns: [
+                {
+                    name: 'rank',
+                    required: true,
+                    label: 'Rank.',
+                    align: 'center',
+                    field: row => row.rank,
+                    format: val => `${val}`,
+                    sortable: false
+                },
+                { name: 'username', align: 'left', label: 'Username', field: 'username', sortable: false },
+                { name: 'score', align: 'center', label: 'Score', field: 'score', sortable: false },
+            ]
         };
     },
-    mounted() { },
+    mounted() {
+        this.getScoreBoard()
+    },
     methods: {
         onGameover(score) {
             this.score = score
             this.gameover = true
+        },
+
+        async getScoreBoard() {
+            const q = query(collection(db, "snake_game"))
+            const querySnapshot = await getDocs(q)
+            querySnapshot.forEach((doc) => {
+                console.log(doc.id, " => ", doc.data())
+            })
         }
     },
 };
