@@ -2,13 +2,9 @@
   <q-page class="flex flex-center column q-pa-md">
     <p class="text-h3">Snake Game</p>
     <template v-if="play">
-      <div
-        class="content flex flex-center q-pl-xs q-pr-xs q-pt-sm q-pb-sm bg-dark q-gutter-y-md"
-      >
+      <div class="content flex flex-center q-pl-xs q-pr-xs q-pt-sm q-pb-sm bg-dark q-gutter-y-md">
         <GameDisplay @on-gameover="onGameover" />
-        <q-btn color="white" class="text-black" @click="play = false"
-          >Quit game</q-btn
-        >
+        <q-btn color="white" class="text-black" @click="play = false">Quit game</q-btn>
       </div>
     </template>
     <template v-else>
@@ -21,15 +17,7 @@
         The snake will graw on getting light green items, and get gameover on
         touch to red snake or wall.
       </p>
-      <q-table
-        flat
-        bordered
-        dark
-        hide-bottom
-        class="q-mt-md"
-        :rows="scoreBoard"
-        :columns="columns"
-      />
+      <q-table flat bordered dark hide-bottom class="q-mt-md" :rows="scoreBoard" :columns="columns" />
     </template>
   </q-page>
 
@@ -47,25 +35,39 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn
-          flat
-          label="EXIT"
-          class="text-white bg-black"
-          @click="play = false"
-          v-close-popup
-        />
+        <q-btn flat label="REGISTER" class="text-white bg-black" @click="prompt = true; username = '';" v-close-popup />
+        <q-btn flat label="EXIT" class="text-white bg-black" @click="play = false" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
+
+  <q-dialog v-model="prompt" persistent>
+    <q-card style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">Your name</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <q-input dense v-model="username" autofocus @keyup.enter="prompt = false" />
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn flat label="Add score" @click="addScore" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
 </template>
 
 <script>
 import GameDisplay from "../components/snake/GameDisplay.vue";
 
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, addDoc, limit, orderBy } from "firebase/firestore";
 
 const db = getFirestore()
-const q = collection(db, "/snakge_game");
+const colRef = collection(db, "/snakge_game")
+const q = query(colRef, orderBy("score", "desc"), limit(5));
 
 export default {
   name: "SnakeGame",
@@ -77,7 +79,10 @@ export default {
     return {
       play: false,
       gameover: false,
+      prompt: false,
+
       score: 0,
+      username: "",
 
       scoreBoard: [
         { rank: 1, username: "user1", score: 19 },
@@ -125,9 +130,14 @@ export default {
     async getScoreBoard() {
       const querySnapshot = await getDocs(q);
       console.log(querySnapshot.size);
+      console.log(querySnapshot)
       querySnapshot.forEach((doc) => {
         console.log(doc.id, " => ", doc.data());
       });
+    },
+
+    addScore() {
+      addDoc(colRef, { username: this.username, score: this.score })
     },
   },
 };

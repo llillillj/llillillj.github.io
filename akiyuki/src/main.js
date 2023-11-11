@@ -17,12 +17,8 @@ const firebaseConfig = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
 
-console.log(process.env.FIREBASE_PROJECT_ID);
-
 const firebaseApp = initializeApp(firebaseConfig);
 const firestore = getFirestore();
-
-export { firebaseApp };
 
 const vueObj = createApp(App);
 
