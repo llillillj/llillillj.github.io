@@ -128,11 +128,17 @@ export default {
     },
 
     async getScoreBoard() {
+      var cnt = 1
+      this.scoreBoard = []
       const querySnapshot = await getDocs(q);
-      console.log(querySnapshot.size);
-      console.log(querySnapshot)
       querySnapshot.forEach((doc) => {
-        console.log(doc.id, " => ", doc.data());
+        const pushItem = {
+          rank: cnt,
+          username: doc.data().username,
+          score: doc.data().score,
+        }
+        this.scoreBoard.push(pushItem)
+        cnt ++
       });
     },
 
