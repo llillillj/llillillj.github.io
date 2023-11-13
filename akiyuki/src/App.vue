@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn flat dense round @click="leftDrawerOpen = !leftDrawerOpen" aria-label="Menu" :icon="leftDrawerOpen ? 'close' : 'menu'" />
 
-        <q-toolbar-title>
+        <q-toolbar-title @click="goHome">
           Akiyuki
         </q-toolbar-title>
 
@@ -56,6 +56,15 @@
             <!-- <q-item-label caption>@quasarframework</q-item-label> -->
           </q-item-section>
         </q-item>
+        <q-item clickable tag="a" target="_blank" href="https://www.uoh-dakken.com/">
+          <q-item-section avatar>
+            <q-icon name="groups" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>ClubActivity</q-item-label>
+            <!-- <q-item-label caption>@quasarframework</q-item-label> -->
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -77,6 +86,11 @@ export default {
   setup() {
     return {
       leftDrawerOpen: ref(false)
+    }
+  },
+  methods: {
+    goHome() {
+      this.$router.push("/")
     }
   }
 }
