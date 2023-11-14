@@ -4,7 +4,7 @@
       <div class="row">
         <template v-for="(v, x) in row" v-bind:key="v">
           <div class="column">
-            <div class="cell" :class="getClass(x, y, v)"></div>
+            <div class="cell_" :class="getClass(x, y, v)"></div>
           </div>
         </template>
       </div>
@@ -37,7 +37,7 @@ export default {
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       ],
 
-      cellClass: ["path", "block"],
+      cell_Class: ["path_", "block_"],
       playerHeadState: [2, 4],
       playerStates: [[2, 4]],
 
@@ -52,7 +52,7 @@ export default {
       enemyMoveInterval: null,
       enemyExpandInterval: null,
 
-      foodState: [4, 2],
+      food_State: [4, 2],
       direction: null,
       zeroIndices: null,
       gameover: false,
@@ -67,8 +67,8 @@ export default {
       else if (this.isPlayer(x, y)) return "player";
       else if (this.isEnemyHead(x, y)) return "enemy-head";
       else if (this.isEnemy(x, y)) return "enemy";
-      else if (this.isFood(x, y)) return "food";
-      else return this.cellClass[v];
+      else if (this.isfood_(x, y)) return "food_";
+      else return this.cell_Class[v];
     },
 
     isGameStarted() {
@@ -83,8 +83,8 @@ export default {
       return this.enemyHeadState[0] == y && this.enemyHeadState[1] == x;
     },
 
-    isFood(x, y) {
-      return this.foodState[0] == y && this.foodState[1] == x;
+    isfood_(x, y) {
+      return this.food_State[0] == y && this.food_State[1] == x;
     },
 
     isPlayer(x, y) {
@@ -148,14 +148,14 @@ export default {
       if (this.mapData[y][x] == 1 || this.isEnemy(x, y)) {
         this.clearAllInterval();
         this.$emit("on-gameover", this.playerStates.length);
-      } else if (this.foodState[0] == y && this.foodState[1] == x) {
+      } else if (this.food_State[0] == y && this.food_State[1] == x) {
         const pushItem = JSON.parse(
           JSON.stringify(this.playerStates.slice(-1)[0])
         );
         this.playerStates.push(pushItem);
         this.handleHeadState(tmp_state);
         this.handleStates();
-        this.changeFoodState();
+        this.changefood_State();
       } else {
         this.handleHeadState(tmp_state);
         this.handleStates();
@@ -223,8 +223,8 @@ export default {
       clearInterval(this.enemyExpandInterval);
     },
 
-    changeFoodState() {
-      this.foodState = this.getRandomZeroIndex();
+    changefood_State() {
+      this.food_State = this.getRandomZeroIndex();
     },
     to_gameover() {
       this.gameover = true;
@@ -253,8 +253,9 @@ export default {
   watch: {
     direction(newVal, prevVal) {
       if (newVal !== null && prevVal === null) {
-        this.playerMoveInterval = setInterval(this.movePlayer, 250);
-        this.enemyMoveInterval = setInterval(this.moveEnemy, 250);
+        const gameInterval = 250
+        this.playerMoveInterval = setInterval(this.movePlayer, gameInterval);
+        this.enemyMoveInterval = setInterval(this.moveEnemy, gameInterval);
         this.enemyExpandInterval = setInterval(this.expandEnemy, 10000);
       }
     },
@@ -269,22 +270,22 @@ export default {
   border-radius: 8px;
 }
 
-.cell {
+.cell_ {
   width: 14px;
   height: 14px;
   margin: 1px;
   border-radius: 4px;
 }
 
-.block {
+.block_ {
   background-color: black;
 }
 
-.path {
+.path_ {
   background-color: rgb(206, 206, 206);
 }
 
-.food {
+.food_ {
   background-color: #2a2;
 }
 

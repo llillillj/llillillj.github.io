@@ -35,8 +35,8 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="REGISTER" class="text-white bg-black" @click="prompt = true; username = '';" v-close-popup />
-        <q-btn flat label="EXIT" class="text-white bg-black" @click="play = false" v-close-popup />
+        <q-btn color="black" label="Exit" @click="play = false" v-close-popup />
+        <q-btn color="black" label="Register" @click="prompt = true; username = '';" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -52,8 +52,8 @@
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Cancel" v-close-popup />
-        <q-btn flat label="Add score" @click="addScore" v-close-popup />
+        <q-btn color="black" label="Cancel" v-close-popup />
+        <q-btn color="black" label="Add score" @click="addScore" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -63,7 +63,12 @@
 <script>
 import GameDisplay from "../components/snake/GameDisplay.vue";
 
-import { getFirestore, collection, getDocs, query, addDoc, limit, orderBy } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, addDoc, limit, orderBy, serverTimestamp } from "firebase/firestore";
+
+import dayjs from 'dayjs'
+import 'dayjs/locale/ja'
+
+dayjs.locale('ja')
 
 const db = getFirestore()
 const colRef = collection(db, "/snakge_game")
@@ -104,7 +109,7 @@ export default {
         {
           name: "username",
           align: "left",
-          label: "Username",
+          label: "UserName",
           field: "username",
           sortable: false,
         },
@@ -113,6 +118,14 @@ export default {
           align: "center",
           label: "Score",
           field: "score",
+          sortable: false,
+        },
+        {
+          name: "date",
+          align: "right",
+          label: "Date",
+          field: "date",
+          format: (val) => `${dayjs(val).format('YYYY/MM/DD')}`,
           sortable: false,
         },
       ],
@@ -136,6 +149,7 @@ export default {
           rank: cnt,
           username: doc.data().username,
           score: doc.data().score,
+          date: doc.data().date.toDate()
         }
         this.scoreBoard.push(pushItem)
         cnt ++
@@ -143,7 +157,7 @@ export default {
     },
 
     addScore() {
-      addDoc(colRef, { username: this.username, score: this.score })
+      addDoc(colRef, { username: this.username, score: this.score, date: serverTimestamp() })
     },
   },
 };
