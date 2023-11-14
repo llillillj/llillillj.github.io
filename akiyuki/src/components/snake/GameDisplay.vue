@@ -42,40 +42,45 @@ export default {
       playerStates: [[2, 4]],
 
       enemyHeadState: [10, 6],
-      enemyStates: [[10, 6], [9, 6], [8, 6]],
+      enemyStates: [
+        [10, 6],
+        [9, 6],
+        [8, 6],
+      ],
 
       playerMoveInterval: null,
       enemyMoveInterval: null,
       enemyExpandInterval: null,
 
       foodState: [4, 2],
-      direction: "→",
+      direction: null,
       zeroIndices: null,
       gameover: false,
     };
   },
   mounted() {
     window.addEventListener("keydown", this.onKeydown);
-    this.playerMoveInterval = setInterval(this.movePlayer, 250);
-    this.enemyMoveInterval = setInterval(this.moveEnemy, 250);
-    this.enemyExpandInterval = setInterval(this.expandEnemy, 10000);
   },
   methods: {
     getClass(x, y, v) {
-      if (this.isPlayerHead(x, y)) return "player-head"
+      if (this.isPlayerHead(x, y)) return "player-head";
       else if (this.isPlayer(x, y)) return "player";
       else if (this.isEnemyHead(x, y)) return "enemy-head";
-      else if (this.isEnemy(x, y)) return "enemy"
+      else if (this.isEnemy(x, y)) return "enemy";
       else if (this.isFood(x, y)) return "food";
       else return this.cellClass[v];
     },
 
+    isGameStarted() {
+      return this.direction !== null;
+    },
+
     isPlayerHead(x, y) {
-      return this.playerHeadState[0] == y && this.playerHeadState[1] == x
+      return this.playerHeadState[0] == y && this.playerHeadState[1] == x;
     },
 
     isEnemyHead(x, y) {
-      return this.enemyHeadState[0] == y && this.enemyHeadState[1] == x
+      return this.enemyHeadState[0] == y && this.enemyHeadState[1] == x;
     },
 
     isFood(x, y) {
@@ -119,6 +124,7 @@ export default {
       }
     },
     movePlayer() {
+      if (!this.isGameStarted()) return;
       var tmp_state = JSON.parse(JSON.stringify(this.playerHeadState));
       switch (this.direction) {
         case "↑":
@@ -139,9 +145,9 @@ export default {
 
     handleState(tmp_state) {
       const [y, x] = tmp_state;
-      if ((this.mapData[y][x] == 1) || (this.isEnemy(x, y))) {
-        this.clearAllInterval()
-        this.$emit('on-gameover', this.playerStates.length)
+      if (this.mapData[y][x] == 1 || this.isEnemy(x, y)) {
+        this.clearAllInterval();
+        this.$emit("on-gameover", this.playerStates.length);
       } else if (this.foodState[0] == y && this.foodState[1] == x) {
         const pushItem = JSON.parse(
           JSON.stringify(this.playerStates.slice(-1)[0])
@@ -166,8 +172,9 @@ export default {
     },
 
     moveEnemy() {
-      var random_idx = Math.floor( Math.random() * 4 );
-      var tmp_state = JSON.parse(JSON.stringify(this.enemyHeadState))
+      if (!this.isGameStarted()) return;
+      var random_idx = Math.floor(Math.random() * 4);
+      var tmp_state = JSON.parse(JSON.stringify(this.enemyHeadState));
       switch (random_idx) {
         case 0:
           tmp_state[0]--;
@@ -182,15 +189,15 @@ export default {
           tmp_state[1]++;
           break;
       }
-      this.enemyHandleState(tmp_state)
+      this.enemyHandleState(tmp_state);
     },
     enemyHandleState(tmp_state) {
       const [y, x] = tmp_state;
       if (this.mapData[y][x] == 1) {
-        return
+        return;
       } else if (this.isPlayer(x, y)) {
-        this.clearAllInterval()
-        this.$emit('on-gameover', this.playerStates.length)
+        this.clearAllInterval();
+        this.$emit("on-gameover", this.playerStates.length);
       } else {
         this.enemyHandleHeadState(tmp_state);
         this.enemyHandleStates();
@@ -201,21 +208,19 @@ export default {
     },
     enemyHandleStates() {
       this.enemyStates.pop();
-      this.enemyStates.unshift(
-        JSON.parse(JSON.stringify(this.enemyHeadState))
-      );
+      this.enemyStates.unshift(JSON.parse(JSON.stringify(this.enemyHeadState)));
     },
     expandEnemy() {
       const pushItem = JSON.parse(
-          JSON.stringify(this.enemyStates.slice(-1)[0])
-        );
+        JSON.stringify(this.enemyStates.slice(-1)[0])
+      );
       this.enemyStates.push(pushItem);
     },
 
     clearAllInterval() {
-      clearInterval(this.playerMoveInterval)
-      clearInterval(this.enemyMoveInterval)
-      clearInterval(this.enemyExpandInterval)
+      clearInterval(this.playerMoveInterval);
+      clearInterval(this.enemyMoveInterval);
+      clearInterval(this.enemyExpandInterval);
     },
 
     changeFoodState() {
@@ -243,6 +248,15 @@ export default {
         }
       }
       return zeroIndices;
+    },
+  },
+  watch: {
+    direction(newVal, prevVal) {
+      if (newVal !== null && prevVal === null) {
+        this.playerMoveInterval = setInterval(this.movePlayer, 250);
+        this.enemyMoveInterval = setInterval(this.moveEnemy, 250);
+        this.enemyExpandInterval = setInterval(this.expandEnemy, 10000);
+      }
     },
   },
 };
