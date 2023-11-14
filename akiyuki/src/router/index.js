@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-// import SnakeGame from "../views/SnakeGame.vue"
+import SnakeGame from "../views/SnakeGame.vue"
 // import NotFound from "../views/NotFound.vue"
 
 const routes = [
@@ -12,7 +12,8 @@ const routes = [
   {
     path: '/snake',
     name: 'SnakeGame',
-    component: () => import(/* webpackChunkName: "snake" */ '../views/SnakeGame.vue')
+    // component: () => import(/* webpackChunkName: "snake" */ '../views/SnakeGame.vue')
+    component: SnakeGame
   },
   // {
   //   path: "/:catchAll(.*)*",
