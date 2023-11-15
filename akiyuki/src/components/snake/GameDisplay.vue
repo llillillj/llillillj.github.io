@@ -10,6 +10,27 @@
       </div>
     </template>
   </div>
+  <template v-if="mobile">
+    <div class="content flex flex-center q-pl-xs q-pr-xs q-pt-sm q-pb-sm text-white bg-dark row">
+      <div class="column">
+        <div class="row">
+          <div class="button-space bg-dark"></div>
+          <q-btn label="↑" @click="direction = '↑'" class="button-space bg-white text-dark"></q-btn>
+          <div class="button-space bg-dark"></div>
+        </div>
+        <div class="row">
+          <q-btn label="←" @click="direction = '←'" class="button-space bg-white text-dark"></q-btn>
+          <div class="button-space bg-dark"></div>
+          <q-btn label="→" @click="direction = '→'" class="button-space bg-white text-dark"></q-btn>
+        </div>
+        <div class="row">
+          <div class="button-space bg-dark"></div>
+          <q-btn label="↓" @click="direction = '↓'" class="button-space bg-white text-dark"></q-btn>
+          <div class="button-space bg-dark"></div>
+        </div>
+      </div>
+    </div>
+  </template>
 </template>
 
 <script>
@@ -56,10 +77,16 @@ export default {
       direction: null,
       zeroIndices: null,
       gameover: false,
+
+      mobile: false,
     };
   },
   mounted() {
     window.addEventListener("keydown", this.onKeydown);
+    if (navigator.userAgent.match(/(iPhone|iPad|iPod|Android)/i)) {
+      // スマホ・タブレット（iOS・Android）の場合の処理を記述
+      this.mobile = true
+    }
   },
   methods: {
     getClass(x, y, v) {
@@ -303,5 +330,17 @@ export default {
 
 .enemy-head {
   background-color: #a22;
+}
+
+.button-space {
+  width: 35px;
+  height: 35px;
+  border-radius: 100%;
+}
+
+.display-flex{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
