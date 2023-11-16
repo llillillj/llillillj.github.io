@@ -333,8 +333,8 @@ export default {
 }
 
 .button-space {
-  width: 35px;
-  height: 35px;
+  width: 45px;
+  height: 45px;
   border-radius: 100%;
 }
 

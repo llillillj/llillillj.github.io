@@ -79,7 +79,7 @@ export default {
   components: {
     GameDisplay,
   },
-  emits: ["is-gameover"],
+  emits: ["on-gameover"],
   data() {
     return {
       play: false,
