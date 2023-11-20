@@ -37,6 +37,7 @@
 export default {
   name: "SnakeGame",
   components: {},
+  emits: ["on-gameover"],
   data() {
     return {
       mapData: [
