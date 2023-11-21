@@ -7,8 +7,14 @@
         <q-btn color="white" class="text-black" @click="play = false">Quit game</q-btn>
       </div>
     </template>
+    <template v-else-if="audio">
+      <AudioCollection @exit-audio="onExitAudio" />
+    </template>
     <template v-else>
-      <q-btn color="white" class="text-black" @click="play = true">Start</q-btn>
+      <div class="row q-gutter-x-md">
+        <q-btn color="white" class="text-black" @click="play = true">Start</q-btn>
+        <q-btn color="white" class="text-black" @click="audio = true">Audio AI</q-btn>
+      </div>
       <p class="q-mt-md">
         This game is called snake game. You can control the blue snake with your
         direction keys.
@@ -62,13 +68,14 @@
 
 <script>
 import GameDisplay from "../components/snake/GameDisplay.vue";
+import AudioCollection from "../components/snake/AudioCollection.vue";
 
 // import { getFirestore, collection, getDocs, query, addDoc, limit, orderBy, serverTimestamp } from "firebase/firestore";
 
-import dayjs from 'dayjs'
-import 'dayjs/locale/ja'
+// import dayjs from 'dayjs'
+// import 'dayjs/locale/ja'
 
-dayjs.locale('ja')
+// dayjs.locale('ja')
 
 // const db = getFirestore()
 // const colRef = collection(db, "/snakge_game")
@@ -78,10 +85,12 @@ export default {
   name: "SnakeGame",
   components: {
     GameDisplay,
+    AudioCollection,
   },
   data() {
     return {
       play: false,
+      audio: false,
       gameover: false,
       prompt: false,
 
@@ -134,6 +143,9 @@ export default {
     // this.getScoreBoard();
   },
   methods: {
+    onExitAudio() {
+      this.audio = false;
+    },
     onGameover(score) {
       this.score = score;
       this.gameover = true;

@@ -4,6 +4,7 @@
 ```
 npm install
 npm add quasar
+npm install @tensorflow/tfjs
 ```
 
 ### Compiles and hot-reloads for development

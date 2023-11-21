@@ -11,29 +11,50 @@
     </template>
   </div>
   <template v-if="mobile">
-    <div class="content flex flex-center q-pl-xs q-pr-xs q-pt-sm q-pb-sm text-white bg-dark row">
+    <div
+      class="content flex flex-center q-pl-xs q-pr-xs q-pt-sm q-pb-sm text-white bg-dark row"
+    >
       <div class="column">
         <div class="row">
           <div class="button-space bg-dark"></div>
-          <q-btn label="↑" @click="direction = '↑'" class="button-space bg-white text-dark"></q-btn>
+          <q-btn
+            label="↑"
+            @click="direction = '↑'"
+            class="button-space bg-white text-dark"
+          ></q-btn>
           <div class="button-space bg-dark"></div>
         </div>
         <div class="row">
-          <q-btn label="←" @click="direction = '←'" class="button-space bg-white text-dark"></q-btn>
+          <q-btn
+            label="←"
+            @click="direction = '←'"
+            class="button-space bg-white text-dark"
+          ></q-btn>
           <div class="button-space bg-dark"></div>
-          <q-btn label="→" @click="direction = '→'" class="button-space bg-white text-dark"></q-btn>
+          <q-btn
+            label="→"
+            @click="direction = '→'"
+            class="button-space bg-white text-dark"
+          ></q-btn>
         </div>
         <div class="row">
           <div class="button-space bg-dark"></div>
-          <q-btn label="↓" @click="direction = '↓'" class="button-space bg-white text-dark"></q-btn>
+          <q-btn
+            label="↓"
+            @click="direction = '↓'"
+            class="button-space bg-white text-dark"
+          ></q-btn>
           <div class="button-space bg-dark"></div>
         </div>
       </div>
     </div>
   </template>
+  <div>{{ transcription_ }}</div>
+  <div id="console"></div>
+  <!-- <q-btn label="start" @click="startSpeechToTxt"></q-btn> -->
 </template>
-
 <script>
+
 export default {
   name: "SnakeGame",
   components: {},
@@ -80,14 +101,21 @@ export default {
       gameover: false,
 
       mobile: false,
+
+      // runtimeTranscription_: "",
+      // transcription_: [],
+      // lang_: "ja-JP",
+      // recognitionInterval: 1000,
     };
   },
   mounted() {
     window.addEventListener("keydown", this.onKeydown);
     if (navigator.userAgent.match(/(iPhone|iPad|iPod|Android)/i)) {
       // スマホ・タブレット（iOS・Android）の場合の処理を記述
-      this.mobile = true
+      this.mobile = true;
     }
+    // setInterval(this.startSpeechToTxt, this.recognitionInterval+100);
+    // this.startSpeechToTxt()
   },
   methods: {
     getClass(x, y, v) {
@@ -277,11 +305,41 @@ export default {
       }
       return zeroIndices;
     },
+    // startSpeechToTxt() {
+    //   // initialisation of voicereco
+
+    //   window.SpeechRecognition =
+    //     window.SpeechRecognition || window.webkitSpeechRecognition;
+    //   const recognition = new window.SpeechRecognition();
+    //   recognition.lang = this.lang_;
+    //   recognition.interimResults = true;
+
+    //   // event current voice reco word
+    //   recognition.addEventListener("result", (event) => {
+    //     var text = Array.from(event.results)
+    //       .map((result) => result[0])
+    //       .map((result) => result.transcript)
+    //       .join("");
+    //     this.runtimeTranscription_ = text;
+    //   });
+    //   // end of transcription
+    //   recognition.addEventListener("end", () => {
+    //     this.transcription_.push(this.runtimeTranscription_);
+    //     this.runtimeTranscription_ = "";
+    //     recognition.stop();
+    //   });
+
+    //   recognition.start();
+    //   // setTimeout(() => {
+    //   //   recognition.stop()
+    //   // }, this.recognitionInterval)
+
+    // },
   },
   watch: {
     direction(newVal, prevVal) {
       if (newVal !== null && prevVal === null) {
-        const gameInterval = 250
+        const gameInterval = 250;
         this.playerMoveInterval = setInterval(this.movePlayer, gameInterval);
         this.enemyMoveInterval = setInterval(this.moveEnemy, gameInterval);
         this.enemyExpandInterval = setInterval(this.expandEnemy, 10000);
@@ -339,7 +397,7 @@ export default {
   border-radius: 100%;
 }
 
-.display-flex{
+.display-flex {
   display: flex;
   justify-content: center;
   align-items: center;
