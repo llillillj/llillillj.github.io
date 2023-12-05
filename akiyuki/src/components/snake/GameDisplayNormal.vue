@@ -114,12 +114,11 @@ export default {
       gameover: false,
 
       mobile: false,
-
     };
   },
   mounted() {
-    this.enemiesHeadState = this.enemiesHeadState.slice(0, this.nenemy)
-    this.enemiesStates = this.enemiesStates.slice(0, this.nenemy)
+    this.enemiesHeadState = this.enemiesHeadState.slice(0, this.nenemy);
+    this.enemiesStates = this.enemiesStates.slice(0, this.nenemy);
     window.addEventListener("keydown", this.onKeydown);
     if (navigator.userAgent.match(/(iPhone|iPad|iPod|Android)/i)) {
       // スマホ・タブレット（iOS・Android）の場合の処理を記述

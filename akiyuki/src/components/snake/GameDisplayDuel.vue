@@ -282,7 +282,7 @@ export default {
     },
 
     changefood_State() {
-      const [y, x] = this.getRandomZeroIndex()
+      const [y, x] = this.getRandomZeroIndex();
       this.food_State = [x, y];
     },
     to_gameover() {
@@ -311,16 +311,15 @@ export default {
   },
   watch: {
     player0Drection(newVal, prevVal) {
-      if (newVal !== null && prevVal === null) {
+      if (newVal !== null && prevVal === null && this.player1Drection === null) {
         const gameInterval = 250;
         this.player0MoveInterval = setInterval(this.moveplayer0, gameInterval);
         this.player1MoveInterval = setInterval(this.moveplayer1, gameInterval);
       }
     },
     player1Drection(newVal, prevVal) {
-      console.log(newVal, prevVal)
-      if (newVal !== null && prevVal === null) {
-        console.log("ゲームは実行されました")
+      console.log(newVal, prevVal);
+      if (newVal !== null && prevVal === null && this.player0Drection === null) {
         const gameInterval = 250;
         this.player0MoveInterval = setInterval(this.moveplayer0, gameInterval);
         this.player1MoveInterval = setInterval(this.moveplayer1, gameInterval);
