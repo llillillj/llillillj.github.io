@@ -49,9 +49,6 @@
       </div>
     </div>
   </template>
-  <div>{{ transcription_ }}</div>
-  <div id="console"></div>
-  <!-- <q-btn label="start" @click="startSpeechToTxt"></q-btn> -->
 </template>
 <script>
 export default {
@@ -144,14 +141,14 @@ export default {
     },
 
     isPlayerHead(x, y) {
-      return this.playerHeadState[0] == y && this.playerHeadState[1] == x;
+      return this.playerHeadState[0] == x && this.playerHeadState[1] == y;
     },
 
     isEnemyHead(x, y) {
       for (const i in this.enemiesHeadState) {
         if (
-          this.enemiesHeadState[i][0] == y &&
-          this.enemiesHeadState[i][1] == x
+          this.enemiesHeadState[i][0] == x &&
+          this.enemiesHeadState[i][1] == y
         )
           return true;
       }
@@ -159,13 +156,13 @@ export default {
     },
 
     isfood_(x, y) {
-      return this.food_State[0] == y && this.food_State[1] == x;
+      return this.food_State[0] == x && this.food_State[1] == y;
     },
 
     isPlayer(x, y) {
       for (const i in this.playerStates) {
         const player_state = this.playerStates[i];
-        if (player_state[0] == y && player_state[1] == x) {
+        if (player_state[0] == x && player_state[1] == y) {
           return true;
         }
       }
@@ -176,7 +173,7 @@ export default {
       for (const i in this.enemiesStates) {
         for (const j in this.enemiesStates[i]) {
           const enemy_state = this.enemiesStates[i][j];
-          if (enemy_state[0] == y && enemy_state[1] == x) {
+          if (enemy_state[0] == x && enemy_state[1] == y) {
             return true;
           }
         }
@@ -205,16 +202,16 @@ export default {
       var tmp_state = JSON.parse(JSON.stringify(this.playerHeadState));
       switch (this.direction) {
         case "↑":
-          tmp_state[0]--;
-          break;
-        case "↓":
-          tmp_state[0]++;
-          break;
-        case "←":
           tmp_state[1]--;
           break;
-        case "→":
+        case "↓":
           tmp_state[1]++;
+          break;
+        case "←":
+          tmp_state[0]--;
+          break;
+        case "→":
+          tmp_state[0]++;
           break;
       }
       this.handleState(tmp_state);
@@ -224,8 +221,8 @@ export default {
       const [y, x] = tmp_state;
       if (this.mapData[y][x] == 1 || this.isEnemy(x, y)) {
         this.clearAllInterval();
-        this.$emit("on-gameover", this.playerStates.length);
-      } else if (this.food_State[0] == y && this.food_State[1] == x) {
+        this.$emit("on-gameover", this.playerStates.length, null);
+      } else if (this.food_State[0] == x && this.food_State[1] == y) {
         const pushItem = JSON.parse(
           JSON.stringify(this.playerStates.slice(-1)[0])
         );
@@ -276,7 +273,7 @@ export default {
         return;
       } else if (this.isPlayer(x, y)) {
         this.clearAllInterval();
-        this.$emit("on-gameover", this.playerStates.length);
+        this.$emit("on-gameover", this.playerStates.length, null);
       } else {
         this.enemyHandleHeadState(tmp_state, i);
         this.enemyHandleStates(i);
@@ -332,36 +329,6 @@ export default {
       }
       return zeroIndices;
     },
-    // startSpeechToTxt() {
-    //   // initialisation of voicereco
-
-    //   window.SpeechRecognition =
-    //     window.SpeechRecognition || window.webkitSpeechRecognition;
-    //   const recognition = new window.SpeechRecognition();
-    //   recognition.lang = this.lang_;
-    //   recognition.interimResults = true;
-
-    //   // event current voice reco word
-    //   recognition.addEventListener("result", (event) => {
-    //     var text = Array.from(event.results)
-    //       .map((result) => result[0])
-    //       .map((result) => result.transcript)
-    //       .join("");
-    //     this.runtimeTranscription_ = text;
-    //   });
-    //   // end of transcription
-    //   recognition.addEventListener("end", () => {
-    //     this.transcription_.push(this.runtimeTranscription_);
-    //     this.runtimeTranscription_ = "";
-    //     recognition.stop();
-    //   });
-
-    //   recognition.start();
-    //   // setTimeout(() => {
-    //   //   recognition.stop()
-    //   // }, this.recognitionInterval)
-
-    // },
   },
   watch: {
     direction(newVal, prevVal) {

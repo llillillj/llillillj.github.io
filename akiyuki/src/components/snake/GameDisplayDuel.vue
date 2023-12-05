@@ -19,7 +19,7 @@
           <div class="button-space bg-dark"></div>
           <q-btn
             label="↑"
-            @click="direction = '↑'"
+            @click="player0Drection = '↑'"
             class="button-space bg-white text-dark"
           ></q-btn>
           <div class="button-space bg-dark"></div>
@@ -27,13 +27,13 @@
         <div class="row">
           <q-btn
             label="←"
-            @click="direction = '←'"
+            @click="player0Drection = '←'"
             class="button-space bg-white text-dark"
           ></q-btn>
           <div class="button-space bg-dark"></div>
           <q-btn
             label="→"
-            @click="direction = '→'"
+            @click="player0Drection = '→'"
             class="button-space bg-white text-dark"
           ></q-btn>
         </div>
@@ -41,7 +41,7 @@
           <div class="button-space bg-dark"></div>
           <q-btn
             label="↓"
-            @click="direction = '↓'"
+            @click="player0Drection = '↓'"
             class="button-space bg-white text-dark"
           ></q-btn>
           <div class="button-space bg-dark"></div>
@@ -49,12 +49,8 @@
       </div>
     </div>
   </template>
-  <div>{{ transcription_ }}</div>
-  <div id="console"></div>
-  <!-- <q-btn label="start" @click="startSpeechToTxt"></q-btn> -->
 </template>
 <script>
-
 export default {
   name: "SnakeGame",
   components: {},
@@ -81,31 +77,22 @@ export default {
       ],
 
       cell_Class: ["path_", "block_"],
-      playerHeadState: [2, 4],
-      playerStates: [[2, 4]],
+      player0HeadState: [2, 4],
+      player0States: [[2, 4]],
 
-      enemyHeadState: [10, 6],
-      enemyStates: [
-        [10, 6],
-        [9, 6],
-        [8, 6],
-      ],
+      player1HeadState: [10, 6],
+      player1States: [[10, 6]],
 
-      playerMoveInterval: null,
-      enemyMoveInterval: null,
-      enemyExpandInterval: null,
+      player0MoveInterval: null,
+      player1MoveInterval: null,
 
       food_State: [4, 2],
-      direction: null,
+      player0Drection: null,
+      player1Drection: null,
       zeroIndices: null,
       gameover: false,
 
       mobile: false,
-
-      // runtimeTranscription_: "",
-      // transcription_: [],
-      // lang_: "ja-JP",
-      // recognitionInterval: 1000,
     };
   },
   mounted() {
@@ -119,44 +106,44 @@ export default {
   },
   methods: {
     getClass(x, y, v) {
-      if (this.isPlayerHead(x, y)) return "player-head";
-      else if (this.isPlayer(x, y)) return "player";
-      else if (this.isEnemyHead(x, y)) return "enemy-head";
-      else if (this.isEnemy(x, y)) return "enemy";
+      if (this.isplayer0Head(x, y)) return "player0-head";
+      else if (this.isplayer0(x, y)) return "player0";
+      else if (this.isplayer1Head(x, y)) return "player1-head";
+      else if (this.isplayer1(x, y)) return "player1";
       else if (this.isfood_(x, y)) return "food_";
       else return this.cell_Class[v];
     },
 
     isGameStarted() {
-      return this.direction !== null;
+      return this.player0Drection !== null || this.player1Drection !== null;
     },
 
-    isPlayerHead(x, y) {
-      return this.playerHeadState[0] == y && this.playerHeadState[1] == x;
+    isplayer0Head(x, y) {
+      return this.player0HeadState[0] == x && this.player0HeadState[1] == y;
     },
 
-    isEnemyHead(x, y) {
-      return this.enemyHeadState[0] == y && this.enemyHeadState[1] == x;
+    isplayer1Head(x, y) {
+      return this.player1HeadState[0] == x && this.player1HeadState[1] == y;
     },
 
     isfood_(x, y) {
-      return this.food_State[0] == y && this.food_State[1] == x;
+      return this.food_State[0] == x && this.food_State[1] == y;
     },
 
-    isPlayer(x, y) {
-      for (const i in this.playerStates) {
-        const player_state = this.playerStates[i];
-        if (player_state[0] == y && player_state[1] == x) {
+    isplayer0(x, y) {
+      for (const i in this.player0States) {
+        const player0_state = this.player0States[i];
+        if (player0_state[0] == x && player0_state[1] == y) {
           return true;
         }
       }
       return false;
     },
 
-    isEnemy(x, y) {
-      for (const i in this.enemyStates) {
-        const enemy_state = this.enemyStates[i];
-        if (enemy_state[0] == y && enemy_state[1] == x) {
+    isplayer1(x, y) {
+      for (const i in this.player1States) {
+        const player1_state = this.player1States[i];
+        if (player1_state[0] == x && player1_state[1] == y) {
           return true;
         }
       }
@@ -165,122 +152,138 @@ export default {
 
     onKeydown(event) {
       switch (event.keyCode) {
-        case 38: // 上矢印キー
-          this.direction = "↑";
+        case 38: // player0の上矢印キー
+          this.player0Drection = "↑";
           break;
-        case 40: // 下矢印キー
-          this.direction = "↓";
+        case 40: // player0の下矢印キー
+          this.player0Drection = "↓";
           break;
-        case 37: // 左矢印キー
-          this.direction = "←";
+        case 37: // player0の左矢印キー
+          this.player0Drection = "←";
           break;
-        case 39: // 右矢印キー
-          this.direction = "→";
+        case 39: // player0の右矢印キー
+          this.player0Drection = "→";
+          break;
+
+        case 87: // player1の上矢印キー
+          this.player1Drection = "↑";
+          break;
+        case 83: // player1の下矢印キー
+          this.player1Drection = "↓";
+          break;
+        case 65: // player1の左矢印キー
+          this.player1Drection = "←";
+          break;
+        case 68: // player1の右矢印キー
+          this.player1Drection = "→";
           break;
       }
     },
-    movePlayer() {
+
+    // player0の操作
+    moveplayer0() {
       if (!this.isGameStarted()) return;
-      var tmp_state = JSON.parse(JSON.stringify(this.playerHeadState));
-      switch (this.direction) {
+      var tmp_state = JSON.parse(JSON.stringify(this.player0HeadState));
+      switch (this.player0Drection) {
         case "↑":
-          tmp_state[0]--;
+          tmp_state[1]--;
           break;
         case "↓":
-          tmp_state[0]++;
+          tmp_state[1]++;
           break;
         case "←":
-          tmp_state[1]--;
-          break;
-        case "→":
-          tmp_state[1]++;
-          break;
-      }
-      this.handleState(tmp_state);
-    },
-
-    handleState(tmp_state) {
-      const [y, x] = tmp_state;
-      if (this.mapData[y][x] == 1 || this.isEnemy(x, y)) {
-        this.clearAllInterval();
-        this.$emit("on-gameover", this.playerStates.length);
-      } else if (this.food_State[0] == y && this.food_State[1] == x) {
-        const pushItem = JSON.parse(
-          JSON.stringify(this.playerStates.slice(-1)[0])
-        );
-        this.playerStates.push(pushItem);
-        this.handleHeadState(tmp_state);
-        this.handleStates();
-        this.changefood_State();
-      } else {
-        this.handleHeadState(tmp_state);
-        this.handleStates();
-      }
-    },
-    handleHeadState(tmp_state) {
-      this.playerHeadState = tmp_state;
-    },
-    handleStates() {
-      this.playerStates.pop();
-      this.playerStates.unshift(
-        JSON.parse(JSON.stringify(this.playerHeadState))
-      );
-    },
-
-    moveEnemy() {
-      if (!this.isGameStarted()) return;
-      var random_idx = Math.floor(Math.random() * 4);
-      var tmp_state = JSON.parse(JSON.stringify(this.enemyHeadState));
-      switch (random_idx) {
-        case 0:
           tmp_state[0]--;
           break;
-        case 1:
+        case "→":
           tmp_state[0]++;
           break;
-        case 2:
+      }
+      this.handleStatePlayer0(tmp_state);
+    },
+    handleStatePlayer0(tmp_state) {
+      const [x, y] = tmp_state;
+      if (this.mapData[y][x] == 1 || this.isplayer1(x, y)) {
+        this.clearAllInterval();
+        this.$emit("on-gameover", this.player0States.length, 0);
+      } else if (this.food_State[0] == x && this.food_State[1] == y) {
+        const pushItem = JSON.parse(
+          JSON.stringify(this.player0States.slice(-1)[0])
+        );
+        this.player0States.push(pushItem);
+        this.handleHeadStatePlayer0(tmp_state);
+        this.handleStatesPlayer0();
+        this.changefood_State();
+      } else {
+        this.handleHeadStatePlayer0(tmp_state);
+        this.handleStatesPlayer0();
+      }
+    },
+    handleHeadStatePlayer0(tmp_state) {
+      this.player0HeadState = tmp_state;
+    },
+    handleStatesPlayer0() {
+      this.player0States.pop();
+      this.player0States.unshift(
+        JSON.parse(JSON.stringify(this.player0HeadState))
+      );
+    },
+
+    // player1の操作
+    moveplayer1() {
+      if (!this.isGameStarted()) return;
+      var tmp_state = JSON.parse(JSON.stringify(this.player1HeadState));
+      switch (this.player1Drection) {
+        case "↑":
           tmp_state[1]--;
           break;
-        case 3:
+        case "↓":
           tmp_state[1]++;
           break;
+        case "←":
+          tmp_state[0]--;
+          break;
+        case "→":
+          tmp_state[0]++;
+          break;
       }
-      this.enemyHandleState(tmp_state);
+      this.handleStatePlayer1(tmp_state);
     },
-    enemyHandleState(tmp_state) {
-      const [y, x] = tmp_state;
-      if (this.mapData[y][x] == 1) {
-        return;
-      } else if (this.isPlayer(x, y)) {
+    handleStatePlayer1(tmp_state) {
+      const [x, y] = tmp_state;
+      if (this.mapData[y][x] == 1 || this.isplayer0(x, y)) {
         this.clearAllInterval();
-        this.$emit("on-gameover", this.playerStates.length);
+        this.$emit("on-gameover", this.player1States.length, 1);
+      } else if (this.food_State[0] == x && this.food_State[1] == y) {
+        const pushItem = JSON.parse(
+          JSON.stringify(this.player1States.slice(-1)[0])
+        );
+        this.player1States.push(pushItem);
+        this.handleHeadStatePlayer1(tmp_state);
+        this.handleStatesPlayer1();
+        this.changefood_State();
       } else {
-        this.enemyHandleHeadState(tmp_state);
-        this.enemyHandleStates();
+        this.handleHeadStatePlayer1(tmp_state);
+        this.handleStatesPlayer1();
       }
     },
-    enemyHandleHeadState(tmp_state) {
-      this.enemyHeadState = tmp_state;
+    handleHeadStatePlayer1(tmp_state) {
+      this.player1HeadState = tmp_state;
     },
-    enemyHandleStates() {
-      this.enemyStates.pop();
-      this.enemyStates.unshift(JSON.parse(JSON.stringify(this.enemyHeadState)));
-    },
-    expandEnemy() {
-      const pushItem = JSON.parse(
-        JSON.stringify(this.enemyStates.slice(-1)[0])
+    handleStatesPlayer1() {
+      this.player1States.pop();
+      this.player1States.unshift(
+        JSON.parse(JSON.stringify(this.player1HeadState))
       );
-      this.enemyStates.push(pushItem);
     },
 
     clearAllInterval() {
-      clearInterval(this.playerMoveInterval);
-      clearInterval(this.enemyMoveInterval);
-      clearInterval(this.enemyExpandInterval);
+      clearInterval(this.player0MoveInterval);
+      clearInterval(this.player1MoveInterval);
     },
 
     changefood_State() {
-      this.food_State = this.getRandomZeroIndex();
+      const [y, x] = this.getRandomZeroIndex()
+      this.food_State = [x, y];
     },
     to_gameover() {
       this.gameover = true;
@@ -305,44 +308,22 @@ export default {
       }
       return zeroIndices;
     },
-    // startSpeechToTxt() {
-    //   // initialisation of voicereco
-
-    //   window.SpeechRecognition =
-    //     window.SpeechRecognition || window.webkitSpeechRecognition;
-    //   const recognition = new window.SpeechRecognition();
-    //   recognition.lang = this.lang_;
-    //   recognition.interimResults = true;
-
-    //   // event current voice reco word
-    //   recognition.addEventListener("result", (event) => {
-    //     var text = Array.from(event.results)
-    //       .map((result) => result[0])
-    //       .map((result) => result.transcript)
-    //       .join("");
-    //     this.runtimeTranscription_ = text;
-    //   });
-    //   // end of transcription
-    //   recognition.addEventListener("end", () => {
-    //     this.transcription_.push(this.runtimeTranscription_);
-    //     this.runtimeTranscription_ = "";
-    //     recognition.stop();
-    //   });
-
-    //   recognition.start();
-    //   // setTimeout(() => {
-    //   //   recognition.stop()
-    //   // }, this.recognitionInterval)
-
-    // },
   },
   watch: {
-    direction(newVal, prevVal) {
+    player0Drection(newVal, prevVal) {
       if (newVal !== null && prevVal === null) {
         const gameInterval = 250;
-        this.playerMoveInterval = setInterval(this.movePlayer, gameInterval);
-        this.enemyMoveInterval = setInterval(this.moveEnemy, gameInterval);
-        this.enemyExpandInterval = setInterval(this.expandEnemy, 10000);
+        this.player0MoveInterval = setInterval(this.moveplayer0, gameInterval);
+        this.player1MoveInterval = setInterval(this.moveplayer1, gameInterval);
+      }
+    },
+    player1Drection(newVal, prevVal) {
+      console.log(newVal, prevVal)
+      if (newVal !== null && prevVal === null) {
+        console.log("ゲームは実行されました")
+        const gameInterval = 250;
+        this.player0MoveInterval = setInterval(this.moveplayer0, gameInterval);
+        this.player1MoveInterval = setInterval(this.moveplayer1, gameInterval);
       }
     },
   },
@@ -375,19 +356,19 @@ export default {
   background-color: #2a2;
 }
 
-.player {
+.player0 {
   background-color: #55c;
 }
 
-.player-head {
+.player0-head {
   background-color: #22a;
 }
 
-.enemy {
+.player1 {
   background-color: #c55;
 }
 
-.enemy-head {
+.player1-head {
   background-color: #a22;
 }
 
