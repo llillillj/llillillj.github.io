@@ -84,7 +84,7 @@ export default {
       enemiesHeadState: [
         [10, 6],
         [6, 10],
-        [8, 17],
+        [17, 8],
       ],
       enemiesStates: [
         [
@@ -98,9 +98,9 @@ export default {
           [5, 9],
         ],
         [
-          [8, 17],
-          [9, 17],
-          [10, 17],
+          [17, 8],
+          [17, 9],
+          [17, 10],
         ],
       ],
 
@@ -217,7 +217,7 @@ export default {
     },
 
     handleState(tmp_state) {
-      const [y, x] = tmp_state;
+      const [x, y] = tmp_state;
       if (this.mapData[y][x] == 1 || this.isEnemy(x, y)) {
         this.clearAllInterval();
         this.$emit("on-gameover", this.playerStates.length, null);
@@ -267,7 +267,7 @@ export default {
       }
     },
     enemyHandleState(tmp_state, i) {
-      const [y, x] = tmp_state;
+      const [x, y] = tmp_state;
       if (this.mapData[y][x] == 1) {
         return;
       } else if (this.isPlayer(x, y)) {
