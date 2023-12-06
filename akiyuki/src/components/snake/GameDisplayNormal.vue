@@ -303,7 +303,8 @@ export default {
     },
 
     changefood_State() {
-      this.food_State = this.getRandomZeroIndex();
+      const [y, x] = this.getRandomZeroIndex();
+      this.food_State = [x, y]
     },
     to_gameover() {
       this.gameover = true;
