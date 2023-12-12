@@ -51,14 +51,14 @@
       </template>
       <template v-else>
         <p class="q-mt-md" style="text-align: center">
-          青い蛇を動かすUser1と赤い蛇を動かすUser2がそれぞれの蛇を操作して<br />相手にぶつかったら負けだよ
+          青い蛇を動かすUser0と赤い蛇を動かすUser1がそれぞれの蛇を操作して<br />相手にぶつかったら負けだよ
         </p>
       </template>
       <!-- button explanation -->
       <div id="btn_expl">
         <p class="flex flex-center"><u>操作方法</u></p>
         <div class="row">
-          <div id="btn_expl_0" class="btn_expl_sp q-gutter-y-sm">
+          <div id="btn_expl_t" class="btn_expl_sp q-gutter-y-sm">
             <p class="flex flex-center">対応表</p>
             <div class="row justify-around">
               <div class="btn_expl_">上</div>
@@ -75,8 +75,8 @@
             class="q-mx-md"
             style="height: 110px"
           ></q-separator>
-          <div id="btn_expl_1" class="btn_expl_sp q-gutter-y-sm">
-            <p class="flex flex-center" style="color: #55c">User1</p>
+          <div id="btn_expl_0" class="btn_expl_sp q-gutter-y-sm">
+            <p class="flex flex-center" style="color: #55c">User0</p>
             <div class="row justify-around">
               <div class="btn_expl_">↑</div>
             </div>
@@ -94,8 +94,8 @@
             v-if="mode === 'duel'"
           ></q-separator>
           <template v-if="mode === 'duel'">
-            <div id="btn_expl_2" class="btn_expl_sp q-gutter-y-sm">
-              <p class="flex flex-center" style="color: #c55">User2</p>
+            <div id="btn_expl_1" class="btn_expl_sp q-gutter-y-sm">
+              <p class="flex flex-center" style="color: #c55">User1</p>
               <div class="row justify-around">
                 <div class="btn_expl_">W</div>
               </div>
@@ -215,10 +215,6 @@ export default {
 .btn_expl_sp {
   width: 150px;
   height: 100px;
-}
-
-btn_expl_1 {
-  border-color: blue;
 }
 
 .btn_expl_ {
