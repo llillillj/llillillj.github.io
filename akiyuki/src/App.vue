@@ -5,10 +5,10 @@
         <q-btn flat dense round @click="leftDrawerOpen = !leftDrawerOpen" aria-label="Menu" :icon="leftDrawerOpen ? 'close' : 'menu'" />
 
         <q-toolbar-title @click="goHome">
-          Akiyuki
+          llillillillj
         </q-toolbar-title>
 
-        <div>University of Hyogo<br>Social Information Science</div>
+        <!-- 兵庫県立大学 -->
       </q-toolbar>
     </q-header>
 
