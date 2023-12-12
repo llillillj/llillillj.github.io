@@ -61,7 +61,14 @@
           <div id="btn_expl_t" class="btn_expl_sp q-gutter-y-sm">
             <p class="flex flex-center">対応表</p>
             <div class="row justify-around">
+              <div class="btn_expl_" style="border: none;"></div>
               <div class="btn_expl_">上</div>
+              <template v-if="mode==='duel'">
+                <div class="btn_expl_">速</div>
+              </template>
+              <template v-else>
+                <div class="btn_expl_" style="border: none;"></div>
+              </template>
             </div>
             <div class="row justify-around">
               <div class="btn_expl_">左</div>
@@ -74,11 +81,13 @@
             vertical
             class="q-mx-md"
             style="height: 110px"
-          ></q-separator>
-          <div id="btn_expl_0" class="btn_expl_sp q-gutter-y-sm">
-            <p class="flex flex-center" style="color: #55c">User0</p>
-            <div class="row justify-around">
+            ></q-separator>
+            <div id="btn_expl_0" class="btn_expl_sp q-gutter-y-sm">
+              <p class="flex flex-center" style="color: #55c">User0</p>
+              <div class="row justify-around">
+              <div class="btn_expl_" style="border: none;"></div>
               <div class="btn_expl_">↑</div>
+              <div class="btn_expl_">shift</div>
             </div>
             <div class="row justify-around">
               <div class="btn_expl_">←</div>
@@ -92,12 +101,14 @@
             class="q-mx-md"
             style="height: 110px"
             v-if="mode === 'duel'"
-          ></q-separator>
-          <template v-if="mode === 'duel'">
-            <div id="btn_expl_1" class="btn_expl_sp q-gutter-y-sm">
-              <p class="flex flex-center" style="color: #c55">User1</p>
-              <div class="row justify-around">
+            ></q-separator>
+            <template v-if="mode === 'duel'">
+              <div id="btn_expl_1" class="btn_expl_sp q-gutter-y-sm">
+                <p class="flex flex-center" style="color: #c55">User1</p>
+                <div class="row justify-around">
+                <div class="btn_expl_" style="border: none;"></div>
                 <div class="btn_expl_">W</div>
+                <div class="btn_expl_">E</div>
               </div>
               <div class="row justify-around">
                 <div class="btn_expl_">A</div>
@@ -135,7 +146,7 @@
       </template>
 
       <q-card-actions align="right">
-        <q-btn color="black" label="戻る" @click="play = false" v-close-popup />
+        <q-btn color="black" label="終了" @click="play = false" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -171,7 +182,6 @@ export default {
     onGameover(score, loser) {
       this.score = score;
       this.loser = loser;
-      console.log(this.loser);
       if (this.loser === 0) {
         this.gameovercolor = "#a22";
       } else if (this.loser === 1) {
@@ -213,7 +223,7 @@ export default {
 }
 
 .btn_expl_sp {
-  width: 150px;
+  width: 120px;
   height: 100px;
 }
 

@@ -91,6 +91,10 @@ export default {
       player1Drection: null,
       zeroIndices: null,
       gameover: false,
+      player0Interval: 250,
+      player1Interval: 250,
+      baseInterval: 250,
+      fastInterval: 100,
 
       mobile: false,
     };
@@ -177,7 +181,49 @@ export default {
         case 68: // player1の右矢印キー
           this.player1Drection = "→";
           break;
+
+        // 加速処理
+        case 16: // player0
+          this.changePlayer0Interval();
+          break;
+        case 69: // player1
+          this.player1Interval =
+            this.player1Interval === this.baseInterval
+              ? this.fastInterval
+              : this.baseInterval;
+          break;
       }
+    },
+
+    changePlayer0Interval() {
+      if (
+        this.player0Interval === this.fastInterval ||
+        this.player0States.length === 1
+      )
+        return;
+      this.player0Interval = this.fastInterval;
+      this.player0States = this.player0States.slice(
+        0,
+        this.player0States.length - 1
+      );
+      setTimeout(() => {
+        this.player0Interval = this.baseInterval;
+      }, 1000);
+    },
+    changePlayer1Interval() {
+      if (
+        this.player1Interval === this.fastInterval ||
+        this.player1States.length === 1
+      )
+        return;
+      this.player1Interval = this.fastInterval;
+      this.player1States = this.player1States.slice(
+        0,
+        this.player1States.length - 1
+      );
+      setTimeout(() => {
+        this.player1Interval = this.baseInterval;
+      }, 1000);
     },
 
     // player0の操作
@@ -311,18 +357,31 @@ export default {
   },
   watch: {
     player0Drection(newVal, prevVal) {
-      if (newVal !== null && prevVal === null && this.player1Drection === null) {
-        const gameInterval = 250;
-        this.player0MoveInterval = setInterval(this.moveplayer0, gameInterval);
-        this.player1MoveInterval = setInterval(this.moveplayer1, gameInterval);
+      if (newVal !== null && prevVal === null && !this.gameover) {
+        this.player0MoveInterval = setInterval(
+          this.moveplayer0,
+          this.player0Interval
+        );
       }
     },
     player1Drection(newVal, prevVal) {
-      console.log(newVal, prevVal);
-      if (newVal !== null && prevVal === null && this.player0Drection === null) {
-        const gameInterval = 250;
-        this.player0MoveInterval = setInterval(this.moveplayer0, gameInterval);
-        this.player1MoveInterval = setInterval(this.moveplayer1, gameInterval);
+      if (newVal !== null && prevVal === null && !this.gameover) {
+        this.player1MoveInterval = setInterval(
+          this.moveplayer1,
+          this.player1Interval
+        );
+      }
+    },
+    player0Interval(newVal) {
+      if (!this.gameover) {
+        clearInterval(this.player0MoveInterval);
+        this.player0MoveInterval = setInterval(this.moveplayer0, newVal);
+      }
+    },
+    player1Interval(newVal) {
+      if (!this.gameover) {
+        clearInterval(this.player1MoveInterval);
+        this.player1MoveInterval = setInterval(this.moveplayer1, newVal);
       }
     },
   },
