@@ -187,10 +187,7 @@ export default {
           this.changePlayer0Interval();
           break;
         case 69: // player1
-          this.player1Interval =
-            this.player1Interval === this.baseInterval
-              ? this.fastInterval
-              : this.baseInterval;
+          this.changePlayer1Interval();
           break;
       }
     },
