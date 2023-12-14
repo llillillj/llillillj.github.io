@@ -61,13 +61,13 @@
           <div id="btn_expl_t" class="btn_expl_sp q-gutter-y-sm">
             <p class="flex flex-center">対応表</p>
             <div class="row justify-around">
-              <div class="btn_expl_" style="border: none;"></div>
+              <div class="btn_expl_" style="border: none"></div>
               <div class="btn_expl_">上</div>
-              <template v-if="mode==='duel'">
+              <template v-if="mode === 'duel'">
                 <div class="btn_expl_">速</div>
               </template>
               <template v-else>
-                <div class="btn_expl_" style="border: none;"></div>
+                <div class="btn_expl_" style="border: none"></div>
               </template>
             </div>
             <div class="row justify-around">
@@ -81,13 +81,17 @@
             vertical
             class="q-mx-md"
             style="height: 110px"
-            ></q-separator>
-            <div id="btn_expl_0" class="btn_expl_sp q-gutter-y-sm">
-              <p class="flex flex-center" style="color: #55c">User0</p>
-              <div class="row justify-around">
-              <div class="btn_expl_" style="border: none;"></div>
+          ></q-separator>
+          <div id="btn_expl_0" class="btn_expl_sp q-gutter-y-sm">
+            <p class="flex flex-center" style="color: #55c">User0</p>
+            <div class="row justify-around">
+              <template v-if="mode === 'duel'">
+                <div class="btn_expl_" style="border: none"></div>
+              </template>
               <div class="btn_expl_">↑</div>
-              <div class="btn_expl_">shift</div>
+              <template v-if="mode === 'duel'">
+                <div class="btn_expl_">shift</div>
+              </template>
             </div>
             <div class="row justify-around">
               <div class="btn_expl_">←</div>
@@ -101,12 +105,12 @@
             class="q-mx-md"
             style="height: 110px"
             v-if="mode === 'duel'"
-            ></q-separator>
-            <template v-if="mode === 'duel'">
-              <div id="btn_expl_1" class="btn_expl_sp q-gutter-y-sm">
-                <p class="flex flex-center" style="color: #c55">User1</p>
-                <div class="row justify-around">
-                <div class="btn_expl_" style="border: none;"></div>
+          ></q-separator>
+          <template v-if="mode === 'duel'">
+            <div id="btn_expl_1" class="btn_expl_sp q-gutter-y-sm">
+              <p class="flex flex-center" style="color: #c55">User1</p>
+              <div class="row justify-around">
+                <div class="btn_expl_" style="border: none"></div>
                 <div class="btn_expl_">W</div>
                 <div class="btn_expl_">E</div>
               </div>
@@ -132,7 +136,9 @@
           <div class="text-h6">ゲームオーバー</div>
         </template>
         <template v-else>
-          <div class="text-h6">User {{ loser === 0 ? 1 : 0 }} が勝ちました !!</div>
+          <div class="text-h6">
+            User {{ loser === 0 ? 1 : 0 }} が勝ちました !!
+          </div>
         </template>
       </q-card-section>
 
