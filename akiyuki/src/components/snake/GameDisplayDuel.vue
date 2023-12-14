@@ -195,9 +195,11 @@ export default {
     changePlayer0Interval() {
       if (
         this.player0Interval === this.fastInterval ||
-        this.player0States.length === 1
-      )
+        this.player0States.length === 1 ||
+        this.gameover
+      ) {
         return;
+      }
       this.player0Interval = this.fastInterval;
       this.player0States = this.player0States.slice(
         0,
@@ -210,9 +212,11 @@ export default {
     changePlayer1Interval() {
       if (
         this.player1Interval === this.fastInterval ||
-        this.player1States.length === 1
-      )
+        this.player1States.length === 1 ||
+        this.gameover
+      ) {
         return;
+      }
       this.player1Interval = this.fastInterval;
       this.player1States = this.player1States.slice(
         0,
@@ -247,6 +251,7 @@ export default {
       const [x, y] = tmp_state;
       if (this.mapData[y][x] == 1 || this.isplayer1(x, y)) {
         this.clearAllInterval();
+        this.gameover = true
         this.$emit("on-gameover", this.player0States.length, 0);
       } else if (this.food_State[0] == x && this.food_State[1] == y) {
         const pushItem = JSON.parse(
@@ -295,6 +300,7 @@ export default {
       const [x, y] = tmp_state;
       if (this.mapData[y][x] == 1 || this.isplayer0(x, y)) {
         this.clearAllInterval();
+        this.gameover = true
         this.$emit("on-gameover", this.player1States.length, 1);
       } else if (this.food_State[0] == x && this.food_State[1] == y) {
         const pushItem = JSON.parse(
