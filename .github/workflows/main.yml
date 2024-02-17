@@ -13,7 +13,10 @@ jobs:
 
       - name: Install dependencies and build
         run: |
+<<<<<<< HEAD
           npm install
+=======
+>>>>>>> 69893b93d8bb570b9d631d892c085f4d1b039451
           npm ci
           npm run build
 
