@@ -21,4 +21,4 @@ jobs:
         working-directory: ./akiyuki
         run: npm run build
       - name: Preparation for static site
-        run: cp -r ./docs ./docs/snake
+        run: cp ./docs/index.html ./docs/snake
