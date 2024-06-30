@@ -1,0 +1,19 @@
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      - name: move to workspace
+        run: cd akiyuki
+      - name: install dependencies
+        run: npm ci
+      - name: Install Quasar CLI
+        run: npm install -g @quasar/cli
+      - name: Build
+        run: npm run build
+        run: mkdir ../docs/snake
+        run: cp ../docs ../docs/snake
