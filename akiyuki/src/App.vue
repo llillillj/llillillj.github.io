@@ -12,7 +12,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered class="bg-grey-8 text-grey-3">
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered class="bg-dark text-grey-3">
       <q-list>
         <q-item-label header class="text-grey-3">Links</q-item-label>
         <q-item clickable class="text-grey-3" to="/">
