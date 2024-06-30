@@ -14,7 +14,7 @@ jobs:
       - name: move to workspace
         run: cd akiyuki
       - name: install dependencies
-        run: npm ci
+        run: npm install
       - name: Install Quasar CLI
         run: npm install -g @quasar/cli
       - name: Build
