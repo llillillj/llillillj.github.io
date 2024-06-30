@@ -11,14 +11,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-      - name: move to workspace
-        run: cd akiyuki
       - name: install dependencies
+        working-directory: ./akiyuki
         run: npm install
       - name: Install Quasar CLI
+        working-directory: ./akiyuki
         run: npm install -g @quasar/cli
       - name: Build
+        working-directory: ./akiyuki
+        run: npm run build
+      - name: Preparation for static site
         run: |
-          npm run build
-          mkdir ../docs/snake
-          cp ../docs ../docs/snake
+          mkdir ./docs/snake
+          cp ./docs ./docs/snake
