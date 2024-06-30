@@ -22,3 +22,10 @@ jobs:
         run: npm run build
       - name: Preparation for static site
         run: cp ./docs/index.html ./docs/snake
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'github-actions@github.com'
+          git add .
+          git commit -m "Automated changes by GitHub Actions"
+          git push
