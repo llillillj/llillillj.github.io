@@ -14,6 +14,7 @@ jobs:
       - name: Install Quasar CLI
         run: npm install -g @quasar/cli
       - name: Build
-        run: npm run build
-        run: mkdir ../docs/snake
-        run: cp ../docs ../docs/snake
+        run: |
+          npm run build
+          mkdir ../docs/snake
+          cp ../docs ../docs/snake
