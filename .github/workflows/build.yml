@@ -22,6 +22,6 @@ jobs:
         run: npm run build
       - name: Preparation for static site
         run: |
-          rm -rf ./docs/snake
+          rm -r ./docs/snake
           mkdir ./docs/snake
           cp ./docs ./docs/snake
