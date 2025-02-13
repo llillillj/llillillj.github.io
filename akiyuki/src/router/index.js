@@ -15,6 +15,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "snake" */ '../views/SnakeGame.vue')
     // component: SnakeGame
   },
+  {
+    path: '/boids-algorithm',
+    name: 'BoidsAlgorithm',
+    component: () => import(/* webpackChunkName: "boids" */ '../views/BoidsAlgorithm.vue')
+  }
   // {
   //   path: "/:catchAll(.*)*",
   //   component: () => import('../views/NotFound.vue'),
