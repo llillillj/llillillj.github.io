@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
+import { ref, reactive, defineProps, defineExpose } from 'vue'
 
 const props = defineProps({
   initialPosition: {
@@ -16,8 +16,9 @@ const props = defineProps({
 
 const element = ref(null)
 const position = reactive(props.initialPosition)
-const velocity = reactive({ x: 5, y: 5 }) // 初期速度
-const windowSize = reactive({ width: 500, height: 500 })
+const velocity = reactive({ x: 1, y: 1 })
+const windowSize = reactive({ width: 300, height: 300 })
+let animationId = null
 
 const updatePosition = () => {
   const elementWidth = element.value.offsetWidth
@@ -39,8 +40,16 @@ const updatePosition = () => {
   position.x = Math.min(windowSize.width - elementWidth, Math.max(0, position.x))
   position.y = Math.min(windowSize.height - elementHeight, Math.max(0, position.y))
 
+  animationId = requestAnimationFrame(updatePosition)
 }
 
+const startAnimation = () => {
+  updatePosition()
+}
 
+const stopAnimation = () => {
+  cancelAnimationFrame(animationId)
+}
 
+defineExpose({ startAnimation, stopAnimation })
 </script>
