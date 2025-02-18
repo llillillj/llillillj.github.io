@@ -3,7 +3,7 @@
     <p class="text-h3">スネークゲーム</p>
     <template v-if="play && mode === 'normal'">
       <div
-        class="content flex flex-center q-pl-xs q-pr-xs q-py-sm bg-dark q-gutter-y-md"
+        class="content flex flex-center q-pl-xs q-pr-xs q-py-sm bg-black q-gutter-y-md"
       >
         <GameDisplayNormal @on-gameover="onGameover" :nenemy="nenemy" />
         <q-btn color="white" class="text-black" @click="play = false"
@@ -12,7 +12,7 @@
       </div>
     </template>
     <template v-else-if="play && mode === 'duel'">
-      <div class="content q-gutter-y-md flex flex-center bg-dark">
+      <div class="content q-gutter-y-md flex flex-center bg-black">
         <GameDisplayDuel @on-gameover="onGameover" />
         <q-btn color="white" class="text-black" @click="play = false"
           >ゲーム終了</q-btn

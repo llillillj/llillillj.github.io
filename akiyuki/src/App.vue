@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated class="bg-dark">
+    <q-header elevated class="bg-black">
       <q-toolbar>
         <q-btn flat dense round @click="leftDrawerOpen = !leftDrawerOpen" aria-label="Menu" :icon="leftDrawerOpen ? 'close' : 'menu'" />
 
@@ -12,7 +12,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered class="bg-dark text-grey-3">
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered class="bg-black text-grey-3">
       <q-list>
         <q-item-label header class="text-grey-3">Links</q-item-label>
         <q-item clickable class="text-grey-3" to="/">
@@ -77,7 +77,7 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container class="bg-dark text-white" style="font-family: 'Murecho', sans-serif;">
+    <q-page-container class="bg-black text-white" style="font-family: 'Murecho', sans-serif;">
       <router-view />
     </q-page-container>
   </q-layout>
