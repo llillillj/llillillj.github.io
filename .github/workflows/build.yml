@@ -6,14 +6,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v3
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
         with:
-          node-version: '20.x'
-      - name: Install dependencies
+          node-version: '18.x'
+      - name: install dependencies
         working-directory: ./akiyuki
-        run: npm ci
+        run: npm install
       - name: Install Quasar CLI
         working-directory: ./akiyuki
         run: npm install -g @quasar/cli
@@ -21,14 +21,12 @@ jobs:
         working-directory: ./akiyuki
         run: npm run build
       - name: Preparation for static site
-        run: |
-          cp ./docs/index.html ./docs/snake
-          cp ./docs/index.html ./docs/boids-algorithm
+        run: cp ./docs/index.html ./docs/snake
+        run: cp ./docs/index.html ./docs/boids-algorithm
       - name: Commit and push changes
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'github-actions@github.com'
           git add .
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Automated changes by GitHub Actions" && git push)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git commit -m "Automated changes by GitHub Actions"
+          git push
