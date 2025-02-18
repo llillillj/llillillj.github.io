@@ -22,6 +22,7 @@ jobs:
         run: npm run build
       - name: Preparation for static site
         run: cp ./docs/index.html ./docs/snake
+        run: cp ./docs/index.html ./docs/boids-algorithm
       - name: Commit and push changes
         run: |
           git config --global user.name 'GitHub Actions'

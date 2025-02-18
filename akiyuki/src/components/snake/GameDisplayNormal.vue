@@ -12,17 +12,17 @@
   </div>
   <template v-if="mobile">
     <div
-      class="content flex flex-center q-pl-xs q-pr-xs q-pt-sm q-pb-sm text-white bg-dark row"
+      class="content flex flex-center q-pl-xs q-pr-xs q-pt-sm q-pb-sm text-white bg-black row"
     >
       <div class="column">
         <div class="row">
-          <div class="button-space bg-dark"></div>
+          <div class="button-space bg-black"></div>
           <q-btn
             label="↑"
             @click="direction = '↑'"
             class="button-space bg-white text-dark"
           ></q-btn>
-          <div class="button-space bg-dark"></div>
+          <div class="button-space bg-black"></div>
         </div>
         <div class="row">
           <q-btn
@@ -30,7 +30,7 @@
             @click="direction = '←'"
             class="button-space bg-white text-dark"
           ></q-btn>
-          <div class="button-space bg-dark"></div>
+          <div class="button-space bg-black"></div>
           <q-btn
             label="→"
             @click="direction = '→'"
@@ -38,13 +38,13 @@
           ></q-btn>
         </div>
         <div class="row">
-          <div class="button-space bg-dark"></div>
+          <div class="button-space bg-black"></div>
           <q-btn
             label="↓"
             @click="direction = '↓'"
             class="button-space bg-white text-dark"
           ></q-btn>
-          <div class="button-space bg-dark"></div>
+          <div class="button-space bg-black"></div>
         </div>
       </div>
     </div>

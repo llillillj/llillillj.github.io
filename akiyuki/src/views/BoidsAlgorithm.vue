@@ -13,7 +13,6 @@
       <q-btn outline @click="stopAnimation">アニメーション停止</q-btn>
     </div>
     <div class="q-gutter-md q-mt-md row">
-      <!-- 個体数調整スライダーを追加 -->
       <div class="row items-center">
         <span class="q-mr-md">個体数</span>
         <q-slider
@@ -45,9 +44,64 @@
         />
       </div>
     </div>
+
+    <div class="q-mt-lg q-pa-xl q-gutter-y-md">
+      <p class="text-h3 text-center">
+        Boids Algorithmとは
+      </p>
+      <div class="text-body1">
+        このBoidsアルゴリズムは，鳥の群れの挙動をシミュレートします．各鳥（Boid）は以下の3つのルールに従って行動します．
+      </div>
+      <div class="row justify-center q-gutter-lg q-mt-md q-mb-xl">
+        <div class="bg-grey-2 q-pa-md rounded-borders text-black"
+            :class="[
+          $q.screen.xs ? 'col-9' :
+          $q.screen.sm ? 'col-5' :
+          'col-3'
+        ]">
+             <p class="text-subtitle1 text-center">
+               <strong>分離 (Separation)</strong>
+             </p>
+             <p class="text-body1 text-center">
+               近くの他の鳥との距離が一定以下にならないように，衝突を避けるように方向を変えます．
+             </p>
+           </div>
+           <div class="bg-grey-2 q-pa-md rounded-borders text-black"
+                :class="[
+          $q.screen.xs ? 'col-9' :
+          $q.screen.sm ? 'col-5' :
+          'col-3'
+        ]">
+             <p class="text-subtitle1 text-center">
+               <strong>整列 (Alignment)</strong>
+             </p>
+             <p class="text-body1 text-center">
+               近くの他の鳥の平均的な速度と方向へ向かうように方向を変えます．
+             </p>
+           </div>
+           <div class="bg-grey-2 q-pa-md rounded-borders text-black"
+                :class="[
+          $q.screen.xs ? 'col-9' :
+          $q.screen.sm ? 'col-5' :
+          'col-3'
+        ]">
+          <p class="text-subtitle1 text-center">
+            <strong>結合 (Cohesion)</strong>
+          </p>
+          <p class="text-body1 text-center">
+            近くの他の鳥の平均位置へ向かうように方向を変えます．
+          </p>
+        </div>
+      </div>
+      <div class="text-body1 text-center">
+        これらのルールを各鳥に適用することで，群れ全体としてまとまりのある，自然な動きが生まれます．各ルールの影響度や，近傍とみなす距離は，スライダーで調整可能です．
+      </div>
+      <div class="text-body1 text-center">
+        この実装では，画面の端に達した鳥は反対側から出現するようにしています．
+      </div>
+    </div>
   </q-page>
 </template>
-
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 
@@ -71,22 +125,6 @@ const sliders = ref([
     key: 'separationWeight'
   },
   {
-    label: '整列重み',
-    value: 1.0,
-    min: 0,
-    max: 5,
-    step: 0.1,
-    key: 'alignmentWeight'
-  },
-  {
-    label: '結合重み',
-    value: 1.0,
-    min: 0,
-    max: 5,
-    step: 0.1,
-    key: 'cohesionWeight'
-  },
-  {
     label: '分離距離',
     value: 20,
     min: 10,
@@ -95,12 +133,28 @@ const sliders = ref([
     key: 'separationDistance'
   },
   {
+    label: '整列重み',
+    value: 1.0,
+    min: 0,
+    max: 5,
+    step: 0.1,
+    key: 'alignmentWeight'
+  },
+  {
     label: '整列距離',
     value: 50,
     min: 10,
     max: 200,
     step: 1,
     key: 'alignmentDistance'
+  },
+  {
+    label: '結合重み',
+    value: 1.0,
+    min: 0,
+    max: 5,
+    step: 0.1,
+    key: 'cohesionWeight'
   },
   {
     label: '結合距離',
