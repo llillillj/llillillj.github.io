@@ -124,8 +124,8 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 
 const canvas = ref(null)
-let width = window.innerWidth < 600 ? window.innerWidth - 80 : 400
-let height = window.innerHeight < 600 ? window.innerHeight * 0.5 : 600
+let width = Math.min(800, window.innerWidth * 0.9)
+let height = Math.min(600, window.innerHeight * 0.6)
 const birds = ref([])
 let animationId = null
 
@@ -144,7 +144,7 @@ const numberOfBirds = ref(20)
 const sliders = ref([
   {
     label: '分離半径',
-    value: 20,  // 変更: 50 -> 20
+    value: 20,
     min: 10,
     max: 100,
     step: 1,
@@ -152,7 +152,7 @@ const sliders = ref([
   },
   {
     label: '整列半径',
-    value: 50,  // 変更: 100 -> 50
+    value: 50,
     min: 10,
     max: 200,
     step: 1,
@@ -160,7 +160,7 @@ const sliders = ref([
   },
   {
     label: '結合半径',
-    value: 100,  // 変更: 150 -> 100
+    value: 100,
     min: 10,
     max: 300,
     step: 1,
@@ -168,7 +168,7 @@ const sliders = ref([
   },
   {
     label: '分離重み',
-    value: 1.5,  // 変更: 1.0 -> 1.5
+    value: 1.5,
     min: 0,
     max: 5,
     step: 0.1,
@@ -444,8 +444,8 @@ const stopAnimation = () => {
 }
 
 const handleResize = () => {
-    width = window.innerWidth < 600 ? window.innerWidth - 40 : 800;
-    height = window.innerHeight < 600 ? window.innerHeight * 0.5 : 600;
+    width = Math.min(800, window.innerWidth * 0.9)
+    height = Math.min(600, window.innerHeight * 0.6)
   };
 
 // 個体数が変更されたときに鳥を再初期化するウォッチャー
