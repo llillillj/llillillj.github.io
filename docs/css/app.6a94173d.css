@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css2?family=Murecho&display=swap);.border{border:2px solid #666;border-radius:8px}.text-content{width:max(300px,60vw)}
+@import url(https://fonts.googleapis.com/css2?family=Murecho&display=swap);.border{border:2px solid #666;border-radius:8px}.text-content{max-width:700px}.semi-transparent-bg{background-color:rgba(0,0,0,.5)}
 
 /*!
  * * Quasar Framework v2.17.7
