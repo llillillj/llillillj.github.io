@@ -33,11 +33,10 @@
         </q-item>
         <q-item clickable tag="a" href="/boids-algorithm">
           <q-item-section avatar>
-            <q-icon name="owl" />
+            <q-icon name="flight" />
           </q-item-section>
           <q-item-section>
             <q-item-label>Boids algorithm</q-item-label>
-            <!-- <q-item-label caption>@quasarframework</q-item-label> -->
           </q-item-section>
         </q-item>
         <q-item clickable tag="a" target="_blank" href="https://github.com/llillillj">
@@ -62,7 +61,6 @@
           </q-item-section>
           <q-item-section>
             <q-item-label>X (Twitter)</q-item-label>
-            <!-- <q-item-label caption>@quasarframework</q-item-label> -->
           </q-item-section>
         </q-item>
         <q-item clickable tag="a" target="_blank" href="https://www.uoh-dakken.com/">
@@ -71,7 +69,6 @@
           </q-item-section>
           <q-item-section>
             <q-item-label>ClubActivity</q-item-label>
-            <!-- <q-item-label caption>@quasarframework</q-item-label> -->
           </q-item-section>
         </q-item>
       </q-list>
