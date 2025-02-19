@@ -12,6 +12,7 @@
     "core-js": "^3.36.0",
     "dayjs": "^1.11.10",
     "quasar": "^2.14.3",
+    "rimraf": "^6.0.1",
     "vue": "^3.4.15",
     "vue-cli-plugin-quasar": "^5.1.2",
     "vue-router": "^4.2.5"
