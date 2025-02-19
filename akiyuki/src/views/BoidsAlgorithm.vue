@@ -12,7 +12,7 @@
       <q-btn outline @click="startAnimation">アニメーション開始</q-btn>
       <q-btn outline @click="stopAnimation">アニメーション停止</q-btn>
     </div>
-    <div class="q-gutter-md q-mt-md row">
+    <div class="q-gutter-md q-mt-md row bg-dark rounded-borders q-pt-sm q-pb-xl q-pl-md q-pr-md">
       <div class="row items-center">
         <span class="q-mr-md">個体数</span>
         <q-slider
@@ -49,7 +49,7 @@
       <p class="text-h3 text-center">
         Boids Algorithmとは
       </p>
-      <div class="text-body1">
+      <div class="text-body1 text-center">
         このBoidsアルゴリズムは，鳥の群れの挙動をシミュレートします．各鳥（Boid）は以下の3つのルールに従って行動します．
       </div>
       <div class="row justify-center q-gutter-lg q-mt-md q-mb-xl">
@@ -102,6 +102,8 @@
     </div>
   </q-page>
 </template>
+
+
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 
@@ -112,7 +114,7 @@ const birds = ref([])
 let animationId = null
 
 // 個体数の初期値とref
-const numberOfBirds = ref(50)
+const numberOfBirds = ref(14)
 
 // スライダーの設定を配列で管理
 const sliders = ref([
@@ -142,7 +144,7 @@ const sliders = ref([
   },
   {
     label: '整列距離',
-    value: 50,
+    value: 120,
     min: 10,
     max: 200,
     step: 1,
@@ -150,7 +152,7 @@ const sliders = ref([
   },
   {
     label: '結合重み',
-    value: 1.0,
+    value: 1.5,
     min: 0,
     max: 5,
     step: 0.1,
@@ -158,7 +160,7 @@ const sliders = ref([
   },
   {
     label: '結合距離',
-    value: 100,
+    value: 44,
     min: 10,
     max: 300,
     step: 1,
@@ -166,7 +168,7 @@ const sliders = ref([
   },
   {
     label: '最大速度',
-    value: 0.5,
+    value: 1.0,
     min: 0.1,
     max: 2,
     step: 0.1,
@@ -207,40 +209,123 @@ const initializeBirds = () => {
   }
 }
 
-// 鳥の更新
+// 距離と角度を計算
+const calculateDistanceAndAngle = (bird, other) => {
+  let diffX = bird.x - other.x
+  if (Math.abs(diffX) > width / 2) {
+    diffX = width - Math.abs(diffX)
+    if (bird.x < other.x) {
+      diffX = -diffX
+    }
+  }
+
+  let diffY = bird.y - other.y
+  if (Math.abs(diffY) > height / 2) {
+    diffY = height - Math.abs(diffY)
+    if (bird.y < other.y) {
+      diffY = -diffY
+    }
+  }
+
+  const distance = Math.sqrt(diffX ** 2 + diffY ** 2)
+  const birdAngle = Math.atan2(bird.vy, bird.vx)
+  const otherAngle = Math.atan2(diffY, diffX)
+  const angleDifference = Math.abs(birdAngle - otherAngle) * (180 / Math.PI)
+
+  return { diffX, diffY, distance, angleDifference }
+}
+
+// 鳥同士の分離力を計算
+const applySeparationForce = (bird, other, separationX, separationY, separationCount) => {
+  const { diffX, diffY, distance, angleDifference } = calculateDistanceAndAngle(bird, other)
+
+  if (distance < sliderValues.value.separationDistance && angleDifference < 90 / 2) {
+    separationX += diffX / distance
+    separationY += diffY / distance
+    separationCount++
+  }
+
+  return { separationX, separationY, separationCount }
+}
+
+// 鳥同士の整列力を計算
+const applyAlignmentForce = (bird, other, alignmentX, alignmentY, alignmentCount) => {
+  const { distance, angleDifference } = calculateDistanceAndAngle(bird, other)
+
+  if (distance < sliderValues.value.alignmentDistance && angleDifference < 90 / 2) {
+    alignmentX += other.vx
+    alignmentY += other.vy
+    alignmentCount++
+  }
+
+  return { alignmentX, alignmentY, alignmentCount }
+}
+
+// 鳥同士の結合力を計算
+const applyCohesionForce = (bird, other, cohesionX, cohesionY, cohesionCount) => {
+  const { distance, angleDifference } = calculateDistanceAndAngle(bird, other)
+
+  if (distance < sliderValues.value.cohesionDistance && angleDifference < 90 / 2) {
+    cohesionX += other.x
+    cohesionY += other.y
+    cohesionCount++
+  }
+
+  return { cohesionX, cohesionY, cohesionCount }
+}
+
+// 速度、位置の更新
+const updateVelocity = (bird) => {
+  // 速度の更新
+  bird.vx += bird.ax
+  bird.vy += bird.ay
+
+  // 速度の正規化
+  const speed = Math.sqrt(bird.vx ** 2 + bird.vy ** 2)
+  if (speed > sliderValues.value.maxSpeed) {
+    bird.vx = bird.vx / speed * sliderValues.value.maxSpeed
+    bird.vy = bird.vy / speed * sliderValues.value.maxSpeed
+  }
+
+  // 位置の更新
+  bird.x += bird.vx
+  bird.y += bird.vy
+
+  // 加速度のリセット
+  bird.ax = 0
+  bird.ay = 0
+}
+
+// メインの更新処理
 const updateBirds = () => {
   birds.value.forEach(bird => {
-    // 分離
-    let separationX = 0
-    let separationY = 0
-    let separationCount = 0
+    let separationX = 0, separationY = 0, separationCount = 0
+    let alignmentX = 0, alignmentY = 0, alignmentCount = 0
+    let cohesionX = 0, cohesionY = 0, cohesionCount = 0
+
     birds.value.forEach(other => {
       if (other !== bird) {
-        // 画面の端を越えた場合の最短距離を計算
-        let diffX = bird.x - other.x
-        if (Math.abs(diffX) > width / 2) {
-          diffX = width - Math.abs(diffX)
-          if (bird.x < other.x) {
-            diffX = -diffX
-          }
-        }
+        // 分離力
+        const separationResult = applySeparationForce(bird, other, separationX, separationY, separationCount)
+        separationX = separationResult.separationX
+        separationY = separationResult.separationY
+        separationCount = separationResult.separationCount
 
-        let diffY = bird.y - other.y
-        if (Math.abs(diffY) > height / 2) {
-          diffY = height - Math.abs(diffY)
-          if (bird.y < other.y) {
-            diffY = -diffY
-          }
-        }
+        // 整列力
+        const alignmentResult = applyAlignmentForce(bird, other, alignmentX, alignmentY, alignmentCount)
+        alignmentX = alignmentResult.alignmentX
+        alignmentY = alignmentResult.alignmentY
+        alignmentCount = alignmentResult.alignmentCount
 
-        const distance = Math.sqrt(diffX ** 2 + diffY ** 2)
-        if (distance < sliderValues.value.separationDistance) {
-          separationX += diffX / distance
-          separationY += diffY / distance
-          separationCount++
-        }
+        // 結合力
+        const cohesionResult = applyCohesionForce(bird, other, cohesionX, cohesionY, cohesionCount)
+        cohesionX = cohesionResult.cohesionX
+        cohesionY = cohesionResult.cohesionY
+        cohesionCount = cohesionResult.cohesionCount
       }
     })
+
+    // 分離力適用
     if (separationCount > 0) {
       separationX /= separationCount
       separationY /= separationCount
@@ -248,37 +333,7 @@ const updateBirds = () => {
       bird.ay += separationY * sliderValues.value.separationWeight
     }
 
-    // 整列
-    let alignmentX = 0
-    let alignmentY = 0
-    let alignmentCount = 0
-    birds.value.forEach(other => {
-      if (other !== bird) {
-        // 画面の端を越えた場合の最短距離を計算
-        let diffX = bird.x - other.x
-        if (Math.abs(diffX) > width / 2) {
-          diffX = width - Math.abs(diffX)
-          if (bird.x < other.x) {
-            diffX = -diffX
-          }
-        }
-
-        let diffY = bird.y - other.y
-        if (Math.abs(diffY) > height / 2) {
-          diffY = height - Math.abs(diffY)
-          if (bird.y < other.y) {
-            diffY = -diffY
-          }
-        }
-
-        const distance = Math.sqrt(diffX ** 2 + diffY ** 2)
-        if (distance < sliderValues.value.alignmentDistance) {
-          alignmentX += other.vx
-          alignmentY += other.vy
-          alignmentCount++
-        }
-      }
-    })
+    // 整列力適用
     if (alignmentCount > 0) {
       alignmentX /= alignmentCount
       alignmentY /= alignmentCount
@@ -286,42 +341,10 @@ const updateBirds = () => {
       bird.ay += (alignmentY - bird.vy) * sliderValues.value.alignmentWeight / 8
     }
 
-    // 結合
-    let cohesionX = 0
-    let cohesionY = 0
-    let cohesionCount = 0
-    birds.value.forEach(other => {
-      if (other !== bird) {
-        // 画面の端を越えた場合の最短距離を計算
-        let diffX = bird.x - other.x
-        if (Math.abs(diffX) > width / 2) {
-          diffX = width - Math.abs(diffX)
-          if (bird.x < other.x) {
-            diffX = -diffX
-          }
-        }
-
-        let diffY = bird.y - other.y
-        if (Math.abs(diffY) > height / 2) {
-          diffY = height - Math.abs(diffY)
-          if (bird.y < other.y) {
-            diffY = -diffY
-          }
-        }
-
-        const distance = Math.sqrt(diffX ** 2 + diffY ** 2)
-        if (distance < sliderValues.value.cohesionDistance) {
-          cohesionX += other.x
-          cohesionY += other.y
-          cohesionCount++
-        }
-      }
-    })
+    // 結合力適用
     if (cohesionCount > 0) {
       cohesionX /= cohesionCount
       cohesionY /= cohesionCount
-
-      // 画面の端を越えた場合の最短距離を計算
       let diffX = cohesionX - bird.x
       if (Math.abs(diffX) > width / 2) {
         diffX = width - Math.abs(diffX)
@@ -342,24 +365,8 @@ const updateBirds = () => {
       bird.ay += diffY * sliderValues.value.cohesionWeight / 100
     }
 
-    // 速度の更新
-    bird.vx += bird.ax
-    bird.vy += bird.ay
-
-    // 速度の正規化
-    const speed = Math.sqrt(bird.vx ** 2 + bird.vy ** 2)
-    if (speed > sliderValues.value.maxSpeed) {
-      bird.vx = bird.vx / speed * sliderValues.value.maxSpeed
-      bird.vy = bird.vy / speed * sliderValues.value.maxSpeed
-    }
-
-    // 位置の更新
-    bird.x += bird.vx
-    bird.y += bird.vy
-
-    // 加速度のリセット
-    bird.ax = 0
-    bird.ay = 0
+    // 速度と位置の更新
+    updateVelocity(bird)
 
     // エッジ処理
     if (bird.x < 5) {
@@ -375,18 +382,48 @@ const updateBirds = () => {
   })
 }
 
-// 鳥の描画
-const drawBirds = () => {
-  const ctx = canvas.value.getContext('2d')
-  ctx.clearRect(0, 0, width, height)
 
+// 鳥の描画
+const drawBird = (bird) => {
+  const ctx = canvas.value.getContext('2d'); // コンテキストを取得
+  const size = 10; // 鳥の大きさ（調整可能）
+
+  // 進行方向の角度を計算
+  const angle = Math.atan2(bird.vy, bird.vx);
+
+  // 鳥の位置に基づいて三角形の頂点を設定
+  const x1 = bird.x + Math.cos(angle) * size;
+  const y1 = bird.y + Math.sin(angle) * size;
+  const x2 = bird.x + Math.cos(angle + Math.PI * 2.5 / 3) * size;
+  const y2 = bird.y + Math.sin(angle + Math.PI * 2.5 / 3) * size;
+  const x3 = bird.x + Math.cos(angle - Math.PI * 2.5 / 3) * size;
+  const y3 = bird.y + Math.sin(angle - Math.PI * 2.5 / 3) * size;
+
+  // 鳥の色を設定
+  ctx.fillStyle = 'orange'; // 鳥の色
+
+  // 三角形を描画
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.lineTo(x3, y3);
+  ctx.closePath();
+  ctx.fill();
+};
+
+// 群れの描画
+const drawBirds = () => {
+  const ctx = canvas.value.getContext('2d');
+
+  // キャンバスを毎回クリア
+  ctx.clearRect(0, 0, width, height);
+
+  // 鳥を描画
   birds.value.forEach(bird => {
-    ctx.beginPath()
-    ctx.arc(bird.x, bird.y, 5, 0, Math.PI * 2)
-    ctx.fillStyle = 'orange'
-    ctx.fill()
-  })
-}
+    drawBird(bird); // 鳥ごとに描画
+  });
+};
+
 
 // アニメーション
 const animate = () => {
@@ -417,6 +454,7 @@ watch(numberOfBirds, () => {
 // ライフサイクルメソッド
 onMounted(() => {
   initializeBirds()
+  startAnimation()
 })
 
 onUnmounted(() => {
