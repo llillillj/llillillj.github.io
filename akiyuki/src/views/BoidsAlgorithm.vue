@@ -1,7 +1,11 @@
 <template>
   <q-page class="flex flex-center column">
-    <div class="q-mb-lg">
-      <span class="text-h3">Boids Algorithm</span>
+    <div class="q-mb-lg" :class="[
+      $q.screen.xs ? 'text-h4 q-mt-md' :
+      $q.screen.sm ? 'text-h3' :
+      'text-h2'
+    ]">
+      <span>Boids Algorithm</span>
     </div>
     <div>
       <div class="border" :style="{ width: `${width+25}px`, height: `${height+25}px` }">
@@ -14,18 +18,14 @@
       <q-btn outline @click="stopAnimation">アニメーション停止</q-btn>
     </div>
 
-    <div class="q-gutter-md q-mt-md row bg-dark rounded-borders q-pt-none q-pb-md q-pl-md q-pr-md">
-      <!-- <div v-for="(setting, key) in displaySettings" :key="key" class="row items-center">
-        <q-toggle v-model="displaySettings[key]" label-color="grey-8" label-text-color="white" />
-        <span class="q-mr-md">{{ key }}</span>
-      </div> -->
+    <div class="q-gutter-md q-mt-md row bg-dark rounded-borders q-pt-none q-pb-md q-pl-md q-pr-md q-ma-md">
       <div v-for="(setting, key) in displaySettings" :key="key" class="row items-center">
         <q-toggle v-model="displaySettings[key].value" label-color="grey-8" label-text-color="white" />
         <span class="q-mr-md">{{ displaySettings[key].label }}</span>
       </div>
     </div>
 
-    <div class="q-gutter-md q-mt-md row bg-dark rounded-borders q-pt-sm q-pb-xl q-pl-md q-pr-md">
+    <div class="q-gutter-md q-mt-md row bg-dark rounded-borders q-pt-xs q-pb-xl q-pl-md q-pr-md q-ma-md q-gutter-y-lg">
       <div class="row items-center">
         <span class="q-mr-md">個体数</span>
         <q-slider
@@ -59,7 +59,12 @@
     </div>
 
     <div class="q-mt-lg q-pa-xl q-gutter-y-md">
-      <p class="text-h3 text-center">
+      <p class="text-h3 text-center"
+        :class="[
+          $q.screen.xs ? 'text-h4' :
+          $q.screen.sm ? 'text-h3' :
+          'text-h2'
+        ]">
         Boids Algorithmとは
       </p>
       <div class="text-body1 text-center">
@@ -119,8 +124,8 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 
 const canvas = ref(null)
-const width = 800
-const height = 600
+let width = window.innerWidth < 600 ? window.innerWidth - 80 : 400
+let height = window.innerHeight < 600 ? window.innerHeight * 0.5 : 600
 const birds = ref([])
 let animationId = null
 
@@ -438,6 +443,11 @@ const stopAnimation = () => {
   }
 }
 
+const handleResize = () => {
+    width = window.innerWidth < 600 ? window.innerWidth - 40 : 800;
+    height = window.innerHeight < 600 ? window.innerHeight * 0.5 : 600;
+  };
+
 // 個体数が変更されたときに鳥を再初期化するウォッチャー
 watch(numberOfBirds, () => {
   initializeBirds()
@@ -447,9 +457,12 @@ watch(numberOfBirds, () => {
 onMounted(() => {
   initializeBirds()
   startAnimation()
+
+  window.addEventListener("resize", handleResize);
 })
 
 onUnmounted(() => {
   stopAnimation()
+  window.removeEventListener("resize", handleResize);
 })
 </script>
