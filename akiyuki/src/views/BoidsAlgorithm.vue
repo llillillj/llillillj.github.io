@@ -8,10 +8,23 @@
         <canvas class="q-ma-sm" ref="canvas" :width="width" :height="height"></canvas>
       </div>
     </div>
+
     <div class="q-gutter-md q-mt-md">
       <q-btn outline @click="startAnimation">アニメーション開始</q-btn>
       <q-btn outline @click="stopAnimation">アニメーション停止</q-btn>
     </div>
+
+    <div class="q-gutter-md q-mt-md row bg-dark rounded-borders q-pt-none q-pb-md q-pl-md q-pr-md">
+      <!-- <div v-for="(setting, key) in displaySettings" :key="key" class="row items-center">
+        <q-toggle v-model="displaySettings[key]" label-color="grey-8" label-text-color="white" />
+        <span class="q-mr-md">{{ key }}</span>
+      </div> -->
+      <div v-for="(setting, key) in displaySettings" :key="key" class="row items-center">
+        <q-toggle v-model="displaySettings[key].value" label-color="grey-8" label-text-color="white" />
+        <span class="q-mr-md">{{ displaySettings[key].label }}</span>
+      </div>
+    </div>
+
     <div class="q-gutter-md q-mt-md row bg-dark rounded-borders q-pt-sm q-pb-xl q-pl-md q-pr-md">
       <div class="row items-center">
         <span class="q-mr-md">個体数</span>
@@ -68,10 +81,9 @@
            </div>
            <div class="bg-grey-2 q-pa-md rounded-borders text-black"
                 :class="[
-          $q.screen.xs ? 'col-9' :
-          $q.screen.sm ? 'col-5' :
-          'col-3'
-        ]">
+                  $q.screen.xs ? 'col-9' :
+                  $q.screen.sm ? 'col-5' :
+                  'col-3']">
              <p class="text-subtitle1 text-center">
                <strong>整列 (Alignment)</strong>
              </p>
@@ -81,10 +93,9 @@
            </div>
            <div class="bg-grey-2 q-pa-md rounded-borders text-black"
                 :class="[
-          $q.screen.xs ? 'col-9' :
-          $q.screen.sm ? 'col-5' :
-          'col-3'
-        ]">
+                  $q.screen.xs ? 'col-9' :
+                  $q.screen.sm ? 'col-5' :
+                  'col-3']">
           <p class="text-subtitle1 text-center">
             <strong>結合 (Cohesion)</strong>
           </p>
@@ -113,6 +124,14 @@ const height = 600
 const birds = ref([])
 let animationId = null
 
+const displaySettings = ref({
+  body: { label: '鳥の体', value: true },
+  fieldOfView: { label: '視野角', value: true },
+  separationRadius: { label: '分離半径', value: true },
+  alignmentRadius: { label: '整列半径', value: true },
+  cohesionRadius: { label: '結合半径', value: true }
+})
+
 // 個体数の初期値とref
 const numberOfBirds = ref(20)
 
@@ -120,7 +139,7 @@ const numberOfBirds = ref(20)
 const sliders = ref([
   {
     label: '分離半径',
-    value: 50,
+    value: 20,  // 変更: 50 -> 20
     min: 10,
     max: 100,
     step: 1,
@@ -128,7 +147,7 @@ const sliders = ref([
   },
   {
     label: '整列半径',
-    value: 100,
+    value: 50,  // 変更: 100 -> 50
     min: 10,
     max: 200,
     step: 1,
@@ -136,7 +155,7 @@ const sliders = ref([
   },
   {
     label: '結合半径',
-    value: 150,
+    value: 100,  // 変更: 150 -> 100
     min: 10,
     max: 300,
     step: 1,
@@ -144,7 +163,7 @@ const sliders = ref([
   },
   {
     label: '分離重み',
-    value: 1.0,
+    value: 1.5,  // 変更: 1.0 -> 1.5
     min: 0,
     max: 5,
     step: 0.1,
@@ -173,19 +192,29 @@ const sliders = ref([
     max: 5,
     step: 0.1,
     key: 'maxSpeed'
+  },
+  {
+    label: '視野角',
+    value: 90,
+    min: 0,
+    max: 360,
+    step: 1,
+    key: 'fieldOfView'
   }
 ])
 
 // スライダーの値を保持するオブジェクト
 const sliderValues = ref({
-  separationWeight: 1.5,
-  alignmentWeight: 1.0,
-  cohesionWeight: 1.0,
   separationDistance: 20,
   alignmentDistance: 50,
   cohesionDistance: 100,
-  maxSpeed: 0.5
+  separationWeight: 1.5,
+  alignmentWeight: 1.0,
+  cohesionWeight: 1.0,
+  maxSpeed: 1.0,
+  fieldOfView: 90
 })
+
 
 // スライダーの値を更新するウォッチャー
 watch(sliders, (newVal) => {
@@ -194,302 +223,185 @@ watch(sliders, (newVal) => {
   })
 }, { deep: true })
 
-// 鳥の初期化
+// ベクトルの長さを制限する関数
+const limitVector = (vx, vy, max) => {
+  const magnitude = Math.sqrt(vx * vx + vy * vy)
+  if (magnitude > max) {
+    const ratio = max / magnitude
+    return { x: vx * ratio, y: vy * ratio }
+  }
+  return { x: vx, y: vy }
+}
+
+// 鳥の初期化を修正
 const initializeBirds = () => {
-  birds.value = [] // 初期化時に既存の鳥をクリア
+  birds.value = []
   for (let i = 0; i < numberOfBirds.value; i++) {
     birds.value.push({
       x: Math.random() * (width - 10) + 5,
       y: Math.random() * (height - 10) + 5,
       vx: Math.random() * 2 - 1,
       vy: Math.random() * 2 - 1,
-      ax: 0,
-      ay: 0
+      angle: Math.random() * 2 * Math.PI // 鳥の向きを追加
     })
   }
 }
 
-// 半径と角度を計算
-const calculateDistanceAndAngle = (bird, other) => {
-  let diffX = bird.x - other.x
-  if (Math.abs(diffX) > width / 2) {
-    diffX = width - Math.abs(diffX)
-    if (bird.x < other.x) {
-      diffX = -diffX
-    }
-  }
-
-  let diffY = bird.y - other.y
-  if (Math.abs(diffY) > height / 2) {
-    diffY = height - Math.abs(diffY)
-    if (bird.y < other.y) {
-      diffY = -diffY
-    }
-  }
-
-  const distance = Math.sqrt(diffX ** 2 + diffY ** 2)
-  const birdAngle = Math.atan2(bird.vy, bird.vx)
-  const otherAngle = Math.atan2(diffY, diffX)
-  const angleDifference = Math.abs(birdAngle - otherAngle) * (180 / Math.PI)
-
-  return { diffX, diffY, distance, angleDifference }
+// 視野角内かどうかをチェックする関数
+const isInFieldOfView = (bird, other) => {
+  const dx = other.x - bird.x
+  const dy = other.y - bird.y
+  const angleToOther = Math.atan2(dy, dx)
+  const angleDiff = Math.abs(angleToOther - bird.angle)
+  return angleDiff <= (sliderValues.value.fieldOfView / 2) * (Math.PI / 180) ||
+         angleDiff >= 2 * Math.PI - (sliderValues.value.fieldOfView / 2) * (Math.PI / 180)
 }
 
-// 最大加速度と最大速度変更量
-const MAX_ACCELERATION = 0.05;  // 加速度の最大値
-const MAX_VELOCITY_CHANGE = 0.005;  // 速度ベクトルの最大変更量
-
-// 速度と位置の更新
-const updateVelocity = (bird) => {
-  // 速度更新（加速度を加える）
-  const newVx = bird.vx + bird.ax;
-  const newVy = bird.vy + bird.ay;
-
-  // 速度ベクトルの変化量が大きすぎないように制限
-  const speedChange = Math.sqrt((newVx - bird.vx) ** 2 + (newVy - bird.vy) ** 2);
-  if (speedChange > MAX_VELOCITY_CHANGE) {
-    const angle = Math.atan2(newVy - bird.vy, newVx - bird.vx);
-    bird.vx = bird.vx + Math.cos(angle) * MAX_VELOCITY_CHANGE;
-    bird.vy = bird.vy + Math.sin(angle) * MAX_VELOCITY_CHANGE;
-  } else {
-    bird.vx = newVx;
-    bird.vy = newVy;
-  }
-
-  // 速度の正規化（最大速度を超えないようにする）
-  const speed = Math.sqrt(bird.vx ** 2 + bird.vy ** 2);
-  if (speed > sliderValues.value.maxSpeed) {
-    bird.vx = bird.vx / speed * sliderValues.value.maxSpeed;
-    bird.vy = bird.vy / speed * sliderValues.value.maxSpeed;
-  }
-
-  // 位置の更新
-  bird.x += bird.vx;
-  bird.y += bird.vy;
-
-  // 加速度のリセット
-  bird.ax = 0;
-  bird.ay = 0;
-}
-
-// 鳥同士の分離力計算時に加速度に制限をかける
-const applyForce = (bird, ax, ay) => {
-  // 加速度が急激に変化しないように制限
-  const accelerationMagnitude = Math.sqrt(ax ** 2 + ay ** 2);
-  if (accelerationMagnitude > MAX_ACCELERATION) {
-    ax = (ax / accelerationMagnitude) * MAX_ACCELERATION;
-    ay = (ay / accelerationMagnitude) * MAX_ACCELERATION;
-  }
-  bird.ax += ax;
-  bird.ay += ay;
-}
-
-// 鳥同士の分離力を計算
-const applySeparationForce = (bird, other, separationX, separationY, separationCount) => {
-  const { diffX, diffY, distance, angleDifference } = calculateDistanceAndAngle(bird, other)
-
-  if (distance < sliderValues.value.separationDistance && angleDifference < 90 / 2) {
-    separationX += diffX / distance
-    separationY += diffY / distance
-    separationCount++
-  }
-
-  // 加速度の制限を適用するためにapplyForceを呼び出し
-  if (separationCount > 0) {
-    separationX /= separationCount
-    separationY /= separationCount
-    applyForce(bird, separationX * sliderValues.value.separationWeight, separationY * sliderValues.value.separationWeight)
-  }
-
-  return { separationX, separationY, separationCount }
-}
-
-// 鳥同士の整列力を計算
-const applyAlignmentForce = (bird, other, alignmentX, alignmentY, alignmentCount) => {
-  const { distance, angleDifference } = calculateDistanceAndAngle(bird, other)
-
-  if (distance < sliderValues.value.alignmentDistance && angleDifference < 90 / 2) {
-    alignmentX += other.vx
-    alignmentY += other.vy
-    alignmentCount++
-  }
-
-  // 加速度の制限を適用するためにapplyForceを呼び出し
-  if (alignmentCount > 0) {
-    alignmentX /= alignmentCount
-    alignmentY /= alignmentCount
-    applyForce(bird, (alignmentX - bird.vx) * sliderValues.value.alignmentWeight / 8, (alignmentY - bird.vy) * sliderValues.value.alignmentWeight / 8)
-  }
-
-  return { alignmentX, alignmentY, alignmentCount }
-}
-
-// 鳥同士の結合力を計算
-const applyCohesionForce = (bird, other, cohesionX, cohesionY, cohesionCount) => {
-  const { distance, angleDifference } = calculateDistanceAndAngle(bird, other)
-
-  if (distance < sliderValues.value.cohesionDistance && angleDifference < 90 / 2) {
-    cohesionX += other.x
-    cohesionY += other.y
-    cohesionCount++
-  }
-
-  // 加速度の制限を適用するためにapplyForceを呼び出し
-  if (cohesionCount > 0) {
-    cohesionX /= cohesionCount
-    cohesionY /= cohesionCount
-    let diffX = cohesionX - bird.x
-    if (Math.abs(diffX) > width / 2) {
-      diffX = width - Math.abs(diffX)
-      if (bird.x < cohesionX) {
-        diffX = -diffX
+// 分離力を計算（視野角を考慮）
+const calculateSeparation = (bird, neighbors) => {
+  let fx = 0, fy = 0, count = 0
+  neighbors.forEach(other => {
+    if (isInFieldOfView(bird, other)) {
+      const dx = bird.x - other.x
+      const dy = bird.y - other.y
+      const distance = Math.sqrt(dx * dx + dy * dy)
+      if (distance > 0 && distance < sliderValues.value.separationDistance) {
+        const force = (sliderValues.value.separationDistance - distance) / distance
+        fx += dx * force
+        fy += dy * force
+        count++
       }
     }
-
-    let diffY = cohesionY - bird.y
-    if (Math.abs(diffY) > height / 2) {
-      diffY = height - Math.abs(diffY)
-      if (bird.y < cohesionY) {
-        diffY = -diffY
-      }
-    }
-
-    applyForce(bird, diffX * sliderValues.value.cohesionWeight / 100, diffY * sliderValues.value.cohesionWeight / 100)
+  })
+  if (count > 0) {
+    fx /= count
+    fy /= count
   }
-
-  return { cohesionX, cohesionY, cohesionCount }
+  return { x: fx * sliderValues.value.separationWeight, y: fy * sliderValues.value.separationWeight }
 }
 
-// メインの更新処理で角度の変更を滑らかにするために線形補完を加えます。
+// 整列力を計算（視野角を考慮）
+const calculateAlignment = (bird, neighbors) => {
+  let vx = 0, vy = 0, count = 0
+  neighbors.forEach(other => {
+    if (isInFieldOfView(bird, other)) {
+      const distance = Math.sqrt((bird.x - other.x) ** 2 + (bird.y - other.y) ** 2)
+      if (distance < sliderValues.value.alignmentDistance) {
+        vx += other.vx
+        vy += other.vy
+        count++
+      }
+    }
+  })
+  if (count > 0) {
+    vx = (vx / count - bird.vx) * sliderValues.value.alignmentWeight
+    vy = (vy / count - bird.vy) * sliderValues.value.alignmentWeight
+  }
+  return { x: vx, y: vy }
+}
+
+// 結合力を計算（視野角を考慮）
+const calculateCohesion = (bird, neighbors) => {
+  let cx = 0, cy = 0, count = 0
+  neighbors.forEach(other => {
+    if (isInFieldOfView(bird, other)) {
+      const distance = Math.sqrt((bird.x - other.x) ** 2 + (bird.y - other.y) ** 2)
+      if (distance < sliderValues.value.cohesionDistance) {
+        cx += other.x
+        cy += other.y
+        count++
+      }
+    }
+  })
+  if (count > 0) {
+    cx = cx / count - bird.x
+    cy = cy / count - bird.y
+    const distance = Math.sqrt(cx * cx + cy * cy)
+    cx = (cx / distance) * sliderValues.value.cohesionWeight
+    cy = (cy / distance) * sliderValues.value.cohesionWeight
+  }
+  return { x: cx, y: cy }
+}
+
+// メインの更新処理
 const updateBirds = () => {
   birds.value.forEach(bird => {
-    let separationX = 0, separationY = 0, separationCount = 0;
-    let alignmentX = 0, alignmentY = 0, alignmentCount = 0;
-    let cohesionX = 0, cohesionY = 0, cohesionCount = 0;
+    const neighbors = birds.value.filter(other => other !== bird)
 
-    birds.value.forEach(other => {
-      if (other !== bird) {
-        // 分離力
-        const separationResult = applySeparationForce(bird, other, separationX, separationY, separationCount);
-        separationX = separationResult.separationX;
-        separationY = separationResult.separationY;
-        separationCount = separationResult.separationCount;
+    const separation = calculateSeparation(bird, neighbors)
+    const alignment = calculateAlignment(bird, neighbors)
+    const cohesion = calculateCohesion(bird, neighbors)
 
-        // 整列力
-        const alignmentResult = applyAlignmentForce(bird, other, alignmentX, alignmentY, alignmentCount);
-        alignmentX = alignmentResult.alignmentX;
-        alignmentY = alignmentResult.alignmentY;
-        alignmentCount = alignmentResult.alignmentCount;
+    bird.vx += separation.x + alignment.x + cohesion.x
+    bird.vy += separation.y + alignment.y + cohesion.y
 
-        // 結合力
-        const cohesionResult = applyCohesionForce(bird, other, cohesionX, cohesionY, cohesionCount);
-        cohesionX = cohesionResult.cohesionX;
-        cohesionY = cohesionResult.cohesionY;
-        cohesionCount = cohesionResult.cohesionCount;
-      }
-    });
+    const limitedVelocity = limitVector(bird.vx, bird.vy, sliderValues.value.maxSpeed)
+    bird.vx = limitedVelocity.x
+    bird.vy = limitedVelocity.y
 
-    // 分離力適用
-    if (separationCount > 0) {
-      separationX /= separationCount;
-      separationY /= separationCount;
-      bird.ax += separationX * sliderValues.value.separationWeight;
-      bird.ay += separationY * sliderValues.value.separationWeight;
-    }
+    bird.x += bird.vx
+    bird.y += bird.vy
 
-    // 整列力適用
-    if (alignmentCount > 0) {
-      alignmentX /= alignmentCount;
-      alignmentY /= alignmentCount;
-      bird.ax += (alignmentX - bird.vx) * sliderValues.value.alignmentWeight / 8;
-      bird.ay += (alignmentY - bird.vy) * sliderValues.value.alignmentWeight / 8;
-    }
+    // 鳥の角度を更新
+    bird.angle = Math.atan2(bird.vy, bird.vx)
 
-    // 結合力適用
-    if (cohesionCount > 0) {
-      cohesionX /= cohesionCount;
-      cohesionY /= cohesionCount;
-      let diffX = cohesionX - bird.x;
-      if (Math.abs(diffX) > width / 2) {
-        diffX = width - Math.abs(diffX);
-        if (bird.x < cohesionX) {
-          diffX = -diffX;
-        }
-      }
-
-      let diffY = cohesionY - bird.y;
-      if (Math.abs(diffY) > height / 2) {
-        diffY = height - Math.abs(diffY);
-        if (bird.y < cohesionY) {
-          diffY = -diffY;
-        }
-      }
-
-      bird.ax += diffX * sliderValues.value.cohesionWeight / 100;
-      bird.ay += diffY * sliderValues.value.cohesionWeight / 100;
-    }
-
-    // 視野内に他の鳥がいないときにでも前進するように加速度を与える
-    if (separationCount === 0 && alignmentCount === 0 && cohesionCount === 0) {
-      // 一定方向に少し加速度を与える（例えば、右上方向に少し加速）
-      const forwardSpeed = 0.02;
-      bird.ax += forwardSpeed * Math.cos(Math.PI / 4);
-      bird.ay += forwardSpeed * Math.sin(Math.PI / 4);
-    }
-
-    // ノイズを加える（ランダムな加速度のノイズ）
-    const noiseStrength = 0.005; // ノイズの強さ
-    const noiseX = (Math.random() - 0.5) * noiseStrength; // -0.5〜0.5の範囲でランダムな値
-    const noiseY = (Math.random() - 0.5) * noiseStrength;
-
-    bird.ax += noiseX; // ランダムなX方向のノイズ
-    bird.ay += noiseY; // ランダムなY方向のノイズ
-
-    // 速度と位置の更新
-    updateVelocity(bird);
-
-    // エッジ処理
-    if (bird.x < 5) {
-      bird.x = width - 5;
-    } else if (bird.x > width - 5) {
-      bird.x = 5;
-    }
-    if (bird.y < 5) {
-      bird.y = height - 5;
-    } else if (bird.y > height - 5) {
-      bird.y = 5;
-    }
-  });
+    bird.x = (bird.x + width) % width
+    bird.y = (bird.y + height) % height
+  })
 }
 
 
 // 鳥の描画
 const drawBird = (bird) => {
-  const ctx = canvas.value.getContext('2d'); // コンテキストを取得
-  const size = 10; // 鳥の大きさ（調整可能）
+  const ctx = canvas.value.getContext('2d')
+  const size = 10
 
-  // 進行方向の角度を計算
-  const angle = Math.atan2(bird.vy, bird.vx);
+  // 鳥の体を描画
+  if (displaySettings.value.body.value) {
+    ctx.fillStyle = 'orange'
+    ctx.beginPath()
+    ctx.moveTo(bird.x + Math.cos(bird.angle) * size, bird.y + Math.sin(bird.angle) * size)
+    ctx.lineTo(bird.x + Math.cos(bird.angle + Math.PI * 2.5 / 3) * size, bird.y + Math.sin(bird.angle + Math.PI * 2.5 / 3) * size)
+    ctx.lineTo(bird.x + Math.cos(bird.angle - Math.PI * 2.5 / 3) * size, bird.y + Math.sin(bird.angle - Math.PI * 2.5 / 3) * size)
+    ctx.closePath()
+    ctx.fill()
+  }
 
-  // 鳥の位置に基づいて三角形の頂点を設定
-  const x1 = bird.x + Math.cos(angle) * size;
-  const y1 = bird.y + Math.sin(angle) * size;
-  const x2 = bird.x + Math.cos(angle + Math.PI * 2.5 / 3) * size;
-  const y2 = bird.y + Math.sin(angle + Math.PI * 2.5 / 3) * size;
-  const x3 = bird.x + Math.cos(angle - Math.PI * 2.5 / 3) * size;
-  const y3 = bird.y + Math.sin(angle - Math.PI * 2.5 / 3) * size;
+  // 視野角を描画
+  if (displaySettings.value.fieldOfView.value) {
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)'
+    ctx.beginPath()
+    ctx.moveTo(bird.x, bird.y)
+    ctx.arc(bird.x, bird.y, size * 3, bird.angle - (sliderValues.value.fieldOfView / 2) * (Math.PI / 180), bird.angle + (sliderValues.value.fieldOfView / 2) * (Math.PI / 180))
+    ctx.closePath()
+    ctx.stroke()
+  }
 
-  // 鳥の色を設定
-  ctx.fillStyle = 'orange'; // 鳥の色
+  // 分離半径を描画
+  if (displaySettings.value.separationRadius.value) {
+    ctx.strokeStyle = 'rgba(255, 100, 100, 0.2)'
+    ctx.beginPath()
+    ctx.arc(bird.x, bird.y, sliderValues.value.separationDistance, 0, 2 * Math.PI)
+    ctx.stroke()
+  }
 
-  // 三角形を描画
-  ctx.beginPath();
-  ctx.moveTo(x1, y1);
-  ctx.lineTo(x2, y2);
-  ctx.lineTo(x3, y3);
-  ctx.closePath();
-  ctx.fill();
-};
+  // 整列半径を描画
+  if (displaySettings.value.alignmentRadius.value) {
+    ctx.strokeStyle = 'rgba(100, 255, 100, 0.2)'
+    ctx.beginPath()
+    ctx.arc(bird.x, bird.y, sliderValues.value.alignmentDistance, 0, 2 * Math.PI)
+    ctx.stroke()
+  }
+
+  // 結合半径を描画
+  if (displaySettings.value.cohesionRadius.value) {
+    ctx.strokeStyle = 'rgba(100, 100, 255, 0.2)'
+    ctx.beginPath()
+    ctx.arc(bird.x, bird.y, sliderValues.value.cohesionDistance, 0, 2 * Math.PI)
+    ctx.stroke()
+  }
+}
+
 
 // 群れの描画
 const drawBirds = () => {
