@@ -7,8 +7,6 @@
         <q-toolbar-title @click="goHome">
           llillillillj
         </q-toolbar-title>
-
-        <!-- 兵庫県立大学 -->
       </q-toolbar>
     </q-header>
 
