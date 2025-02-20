@@ -5,7 +5,7 @@
       $q.screen.sm ? 'text-h3' :
       'text-h2'
     ]">
-      <span>Boids Algorithm</span>
+      <span>Boid Algorithm</span>
     </div>
     <div>
       <div class="border" :style="{ width: `${width+25}px`, height: `${height+25}px` }">
@@ -65,10 +65,10 @@
           $q.screen.sm ? 'text-h3' :
           'text-h2'
         ]">
-        Boids Algorithmとは
+        Boid Algorithmとは
       </p>
       <div class="text-body1 text-center">
-        このBoidsアルゴリズムは，鳥の群れの挙動をシミュレートします．各鳥（Boid）は以下の3つのルールに従って行動します．
+        このBoidアルゴリズムは，鳥の群れの挙動をシミュレートします．各鳥（Boid）は以下の3つのルールに従って行動します．
       </div>
       <div class="row justify-center q-gutter-lg q-mt-md q-mb-xl">
         <div class="bg-grey-2 q-pa-md rounded-borders text-black"

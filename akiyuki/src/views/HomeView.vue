@@ -35,7 +35,7 @@
           <p class="text-h5">制作物</p>
           <li class="text-subtitle1">部活動の定例会資料自動作成ツール</li>
           <li class="text-subtitle1"><a href="https://llillillj.github.io/snake" target="_blank" rel="noopener noreferrer" style="color: skyblue;">Snake Game</a></li>
-          <li class="text-subtitle1"><a href="https://llillillj.github.io/boids-algorithm/" target="_blank" rel="noopener noreferrer" style="color: skyblue;">Boids Algorithm</a></li>
+          <li class="text-subtitle1"><a href="https://llillillj.github.io/boid-algorithm/" target="_blank" rel="noopener noreferrer" style="color: skyblue;">Boid Algorithm</a></li>
         </div>
         <div>
           <p class="text-h5">リンク</p>

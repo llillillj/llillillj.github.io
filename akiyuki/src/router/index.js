@@ -16,9 +16,9 @@ const routes = [
     // component: SnakeGame
   },
   {
-    path: '/boids-algorithm',
-    name: 'BoidsAlgorithm',
-    component: () => import(/* webpackChunkName: "boids" */ '../views/BoidsAlgorithm.vue')
+    path: '/boid-algorithm',
+    name: 'BoidAlgorithm',
+    component: () => import(/* webpackChunkName: "boid" */ '../views/BoidAlgorithm.vue')
   }
   // {
   //   path: "/:catchAll(.*)*",

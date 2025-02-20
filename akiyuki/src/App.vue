@@ -29,12 +29,12 @@
             <q-item-label>SnakeGame</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" href="/boids-algorithm">
+        <q-item clickable tag="a" href="/boid-algorithm">
           <q-item-section avatar>
             <q-icon name="flight" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Boids algorithm</q-item-label>
+            <q-item-label>Boid algorithm</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable tag="a" target="_blank" href="https://github.com/llillillj">
