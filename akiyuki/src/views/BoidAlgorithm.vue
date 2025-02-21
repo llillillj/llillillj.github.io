@@ -17,44 +17,66 @@
       <q-btn outline @click="startAnimation">アニメーション開始</q-btn>
       <q-btn outline @click="stopAnimation">アニメーション停止</q-btn>
     </div>
-
-    <div class="q-gutter-md q-mt-md row bg-dark rounded-borders q-pt-none q-pb-md q-pl-md q-pr-md q-ma-md">
-      <div v-for="(setting, key) in displaySettings" :key="key" class="row items-center">
-        <q-toggle v-model="displaySettings[key].value" label-color="grey-8" label-text-color="white" />
-        <span class="q-mr-md">{{ displaySettings[key].label }}</span>
+    <div class="bg-dark q-mt-md rounded-borders">
+      <div class="q-gutter-md q-ma-md">
+        <div class="col">
+          <q-toggle v-model="useMouseBird"
+            label-color="grey-8"
+            label-text-color="white"
+            label="追従鳥の利用："
+            :left-label="true" />
+        </div>
+        <div class="row items-center">
+          <span class="q-mr-md">x: {{ mouseBird.x.toFixed(2) }}</span>
+          <span class="q-mr-md">y: {{ mouseBird.y.toFixed(2) }}</span>
+          <span class="q-mr-md">vx: {{ mouseBird.vx.toFixed(2) }}</span>
+          <span class="q-mr-md">vy: {{ mouseBird.vy.toFixed(2) }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="column bg-dark rounded-borders q-pt-none q-pb-md q-pl-md q-pr-md q-mx-lg q-gutter-md q-mt-md">
+      <div class="col">表示設定</div>
+      <div class="row col">
+        <div v-for="(setting, key) in displaySettings" :key="key" class="row items-center">
+          <q-toggle v-model="displaySettings[key].value" label-color="grey-8" label-text-color="white" />
+          <span class="q-mr-md">{{ displaySettings[key].label }}</span>
+        </div>
       </div>
     </div>
 
-    <div class="q-gutter-md q-mt-md row bg-dark rounded-borders q-pt-xs q-pb-xl q-pl-md q-pr-md q-ma-md q-gutter-y-lg">
-      <div class="row items-center">
-        <span class="q-mr-md">個体数</span>
-        <q-slider
-          v-model="numberOfBirds"
-          label-always
-          label-color="grey-8"
-          label-text-color="white"
-          switch-marker-labels-side
-          switch-label-side
-          markers
-          :min="10"
-          :max="100"
-          :step="1"
-        />
-      </div>
-      <div v-for="(slider, index) in sliders" :key="index" class="row items-center">
-        <span class="q-mr-md">{{ slider.label }}</span>
-        <q-slider
-          v-model="slider.value"
-          label-always
-          label-color="grey-8"
-          label-text-color="white"
-          switch-marker-labels-side
-          switch-label-side
-          markers
-          :min="slider.min"
-          :max="slider.max"
-          :step="slider.step"
-        />
+    <div class="column bg-dark rounded-borders q-pt-md q-pb-lg q-pl-lg q-pr-lg q-mt-md q-mx-lg">
+      <div class="col">パラメータ設定</div>
+      <div class="row col items-center q-gutter-xl">
+        <div class="row items-center">
+          <span class="q-mr-md">個体数</span>
+          <q-slider
+            v-model="numberOfBirds"
+            label-always
+            label-color="grey-8"
+            label-text-color="white"
+            switch-marker-labels-side
+            switch-label-side
+            markers
+            :min="10"
+            :max="100"
+            :step="1"
+          />
+        </div>
+        <div v-for="(slider, index) in sliders" :key="index" class="row items-center">
+          <span class="q-mr-md">{{ slider.label }}</span>
+          <q-slider
+            v-model="slider.value"
+            label-always
+            label-color="grey-8"
+            label-text-color="white"
+            switch-marker-labels-side
+            switch-label-side
+            markers
+            :min="slider.min"
+            :max="slider.max"
+            :step="slider.step"
+          />
+        </div>
       </div>
     </div>
 
@@ -128,6 +150,39 @@ let width = Math.min(800, window.innerWidth * 0.9)
 let height = Math.min(600, window.innerHeight * 0.6)
 const birds = ref([])
 let animationId = null
+const useMouseBird = ref(false)
+
+const mousePosition = ref({ x: width / 2, y: height / 2})
+
+// ユーザのマウスに追従する鳥
+const mouseBird = ref({
+  x: width / 2,
+  y: height / 2,
+  vx: 0,
+  vy: 0,
+  angle: 0
+})
+
+const handleMouseMove = (event) => {
+  const rect = canvas.value.getBoundingClientRect()
+  mousePosition.value.x = event.clientX - rect.left
+  mousePosition.value.y = event.clientY - rect.top
+}
+
+// マウス追従鳥の更新
+const updateMouseBird = () => {
+  const dx = mousePosition.value.x - mouseBird.value.x
+  const dy = mousePosition.value.y - mouseBird.value.y
+  const distance = Math.sqrt(dx * dx + dy * dy)
+
+  if (distance > 1) {
+    mouseBird.value.vx = (dx / distance) * 2.0
+    mouseBird.value.vy = (dy / distance) * 2.0
+    mouseBird.value.x += mouseBird.value.vx
+    mouseBird.value.y += mouseBird.value.vy
+    mouseBird.value.angle = Math.atan2(mouseBird.value.vy, mouseBird.value.vx)
+  }
+}
 
 const displaySettings = ref({
   body: { label: '鳥の体', value: true },
@@ -168,7 +223,7 @@ const sliders = ref([
   },
   {
     label: '分離重み',
-    value: 1.5,
+    value: 1.0,
     min: 0,
     max: 5,
     step: 0.1,
@@ -192,8 +247,8 @@ const sliders = ref([
   },
   {
     label: '最大速度',
-    value: 1.0,
-    min: 0.1,
+    value: 2.0,
+    min: 1.5,
     max: 5,
     step: 0.1,
     key: 'maxSpeed'
@@ -213,10 +268,10 @@ const sliderValues = ref({
   separationDistance: 20,
   alignmentDistance: 50,
   cohesionDistance: 100,
-  separationWeight: 1.5,
+  separationWeight: 1.0,
   alignmentWeight: 1.0,
   cohesionWeight: 1.0,
-  maxSpeed: 1.0,
+  maxSpeed: 2.0,
   fieldOfView: 90
 })
 
@@ -230,13 +285,18 @@ watch(sliders, (newVal) => {
 
 // ベクトルの長さを制限する関数
 const limitVector = (vx, vy, max) => {
-  const magnitude = Math.sqrt(vx * vx + vy * vy)
-  if (magnitude > max) {
-    const ratio = max / magnitude
-    return { x: vx * ratio, y: vy * ratio }
+  let magnitude = Math.sqrt(vx * vx + vy * vy);
+  if (magnitude === 0) {
+    vx = (Math.random() * 2 - 1) * 0.1; // 小さなランダム値を与える
+    vy = (Math.random() * 2 - 1) * 0.1;
+    magnitude = Math.sqrt(vx * vx + vy * vy);
   }
-  return { x: vx, y: vy }
-}
+  if (magnitude > max) {
+    const ratio = max / magnitude;
+    return { x: vx * ratio, y: vy * ratio };
+  }
+  return { x: vx, y: vy };
+};
 
 // 鳥の初期化を修正
 const initializeBirds = () => {
@@ -299,8 +359,12 @@ const calculateAlignment = (bird, neighbors) => {
     }
   })
   if (count > 0) {
-    vx = (vx / count - bird.vx) * sliderValues.value.alignmentWeight
-    vy = (vy / count - bird.vy) * sliderValues.value.alignmentWeight
+    vx = (vx / count - bird.vx) * sliderValues.value.alignmentWeight;
+    vy = (vy / count - bird.vy) * sliderValues.value.alignmentWeight;
+    if (vx === 0 && vy === 0) {
+      vx = (Math.random() * 2 - 1) * 0.1;
+      vy = (Math.random() * 2 - 1) * 0.1;
+    }
   }
   return { x: vx, y: vy }
 }
@@ -331,7 +395,8 @@ const calculateCohesion = (bird, neighbors) => {
 // メインの更新処理
 const updateBirds = () => {
   birds.value.forEach(bird => {
-    const neighbors = birds.value.filter(other => other !== bird)
+    // const neighbors = birds.value.filter(other => other !== bird)
+    const neighbors = [...birds.value, mouseBird.value].filter(other => other !== bird)
 
     const separation = calculateSeparation(bird, neighbors)
     const alignment = calculateAlignment(bird, neighbors)
@@ -344,8 +409,8 @@ const updateBirds = () => {
     bird.vx = limitedVelocity.x
     bird.vy = limitedVelocity.y
 
-    bird.x += bird.vx
-    bird.y += bird.vy
+    bird.x += bird.vx / 2
+    bird.y += bird.vy / 2
 
     // 鳥の角度を更新
     bird.angle = Math.atan2(bird.vy, bird.vx)
@@ -353,8 +418,18 @@ const updateBirds = () => {
     bird.x = (bird.x + width) % width
     bird.y = (bird.y + height) % height
   })
+  if (useMouseBird.value) {
+    updateMouseBird()
+  }
 }
 
+const drawMouseBird = () => {
+  const ctx = canvas.value.getContext('2d')
+  ctx.fillStyle = 'red'
+  ctx.beginPath()
+  ctx.arc(mouseBird.value.x, mouseBird.value.y, 10, 0, 2 * Math.PI)
+  ctx.fill()
+}
 
 // 鳥の描画
 const drawBird = (bird) => {
@@ -419,6 +494,9 @@ const drawBirds = () => {
   birds.value.forEach(bird => {
     drawBird(bird); // 鳥ごとに描画
   });
+  if (useMouseBird.value) {
+    drawMouseBird()
+  }
 };
 
 
@@ -457,12 +535,13 @@ watch(numberOfBirds, () => {
 onMounted(() => {
   initializeBirds()
   startAnimation()
-
+  canvas.value.addEventListener('mousemove', handleMouseMove)
   window.addEventListener("resize", handleResize);
 })
 
 onUnmounted(() => {
   stopAnimation()
+  canvas.value.removeEventListener('mousemove', handleMouseMove)
   window.removeEventListener("resize", handleResize);
 })
 </script>
