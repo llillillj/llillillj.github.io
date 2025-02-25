@@ -164,10 +164,23 @@ const mouseBird = ref({
 })
 
 const handleMouseMove = (event) => {
-  const rect = canvas.value.getBoundingClientRect()
-  mousePosition.value.x = event.clientX - rect.left
-  mousePosition.value.y = event.clientY - rect.top
-}
+  const rect = canvas.value.getBoundingClientRect();
+  mousePosition.value.x = Math.max(0, Math.min(event.clientX - rect.left, rect.width));
+  mousePosition.value.y = Math.max(0, Math.min(event.clientY - rect.top, rect.height));
+};
+
+const handleTouchMove = (event) => {
+  event.preventDefault(); // スクロール防止
+  if (event.touches.length > 0) {
+    const rect = canvas.value.getBoundingClientRect();
+    const touchX = event.touches[0].clientX - rect.left;
+    const touchY = event.touches[0].clientY - rect.top;
+
+    // キャンバス内に制限
+    mousePosition.value.x = Math.max(0, Math.min(touchX, rect.width));
+    mousePosition.value.y = Math.max(0, Math.min(touchY, rect.height));
+  }
+};
 
 // マウス追従鳥の更新
 const updateMouseBird = () => {
@@ -536,12 +549,14 @@ onMounted(() => {
   initializeBirds()
   startAnimation()
   canvas.value.addEventListener('mousemove', handleMouseMove)
+  canvas.value.addEventListener('touchmove', handleTouchMove, { passive: false })
   window.addEventListener("resize", handleResize);
 })
 
 onUnmounted(() => {
   stopAnimation()
   canvas.value.removeEventListener('mousemove', handleMouseMove)
+  canvas.value.removeEventListener('touchmove', handleTouchMove)
   window.removeEventListener("resize", handleResize);
 })
 </script>
