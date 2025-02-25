@@ -20,16 +20,17 @@
           <p class="text-h5">過去の取り組み</p>
           <li class="text-subtitle1">2021~2023: <a href="https://www.nysol.jp/" target="_blank" rel="noopener noreferrer" style="color: skyblue;">株式会社nysol</a>  開発バイト（請求書発行サイト）</li>
           <li class="text-subtitle1">2022: <a href="https://www.kaggle.com/akiyukikouyama/code" target="_blank" rel="noopener noreferrer" style="color: skyblue;">Kaggle notebook expert</a>（データ分析レポート）</li>
-          <li class="text-subtitle1">2023: 架電音声の文字起こしデータを用いた顧客属性分析バイト</li>
+          <li class="text-subtitle1">2023: 分析バイト 架電音声の文字起こしデータを用いた顧客属性分析</li>
           <li class="text-subtitle1">2023: <a href="https://signate.jp/competitions/1051" target="_blank" rel="noopener noreferrer" style="color: skyblue;">Signate student cup 2023</a> 上位入賞</li>
           <li class="text-subtitle1">2024: <a href="https://matsuo-institute.com/" target="_blank" rel="noopener noreferrer" style="color: skyblue;">株式会社松尾研究所</a> インターン（小売店需要予測）</li>
           <li class="text-subtitle1">2024: <a href="https://www.dakken.co.jp/" target="_blank" rel="noopener noreferrer" style="color: skyblue;">合同会社DA研</a> リカレント教育用動画配信サイト（フロントエンド開発）</li>
           <li class="text-subtitle1">[WIP]: <a href="https://www.dakken.co.jp/" target="_blank" rel="noopener noreferrer" style="color: skyblue;">合同会社DA研</a> 地方自治体と共同でセルフケアアプリを開発中</li>
+          <li class="text-subtitle1">[WIP]: 開発バイト AutoCADの図形保存・解析・描画の自動化アプリ作成</li>
         </div>
         <div>
           <p class="text-h5">研究内容</p>
           <p class="text-subtitle1">研究室で取り組まれているプロジェクトの一つで<span style="color: orange;">魚群のインタラクション</span>について携わっています．卒業研究では，このテーマでの利用を想定した<span style="color: orange;">魚型ロボットの開発</span>を行いました．</p>
-          <p class="text-subtitle1">学部卒業後は，同大学の情報科学研究科に進学し，魚型ロボットの遊泳制御を<span style="color: orange;">強化学習</span>等を用いて行っていく予定です．</p>
+          <p class="text-subtitle1">学部卒業後は，同大学の情報科学研究科に進学し，魚型ロボットの改良，遊泳制御の<span style="color: orange;">強化学習</span>による最適化等を用いて行っていく予定です．</p>
         </div>
         <div>
           <p class="text-h5">制作物</p>
