@@ -11,9 +11,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-      - name: install dependencies
+      - name: Install dependencies
         working-directory: ./akiyuki
-        run: npm install
+        run: npm ci || npm install --legacy-peer-deps
       - name: Install Quasar CLI
         working-directory: ./akiyuki
         run: npm install -g @quasar/cli
