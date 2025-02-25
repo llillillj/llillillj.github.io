@@ -1,8 +1,32 @@
-// boid.js
-import { ref } from 'vue';
+// boid.ts
+import { Ref, ref } from 'vue';
+
+interface BoidParams {
+  separationDistance: number;
+  alignmentDistance: number;
+  cohesionDistance: number;
+  separationWeight: number;
+  alignmentWeight: number;
+  cohesionWeight: number;
+  maxSpeed: number;
+  fieldOfView: number;
+}
+
+interface Vector {
+  x: number;
+  y: number;
+}
+
+interface Bird {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  angle: number;
+}
 
 // スライダーの値を保持するオブジェクト（リアクティブにする）
-export const boidParams = ref({
+export const boidParams: Ref<BoidParams> = ref({
   separationDistance: 20,
   alignmentDistance: 50,
   cohesionDistance: 100,
@@ -14,7 +38,7 @@ export const boidParams = ref({
 });
 
 // ベクトルの長さを制限する関数
-export const limitVector = (vx, vy, max) => {
+export const limitVector = (vx: number, vy: number, max: number): Vector => {
   let magnitude = Math.sqrt(vx * vx + vy * vy);
   if (magnitude === 0) {
     vx = (Math.random() * 2 - 1) * 0.1; // 小さなランダム値を与える
@@ -29,7 +53,7 @@ export const limitVector = (vx, vy, max) => {
 };
 
 // 視野角内かどうかをチェックする関数
-export const isInFieldOfView = (bird, other) => {
+export const isInFieldOfView = (bird: Bird, other: Bird): boolean => {
   const dx = other.x - bird.x;
   const dy = other.y - bird.y;
   const angleToOther = Math.atan2(dy, dx);
@@ -39,7 +63,7 @@ export const isInFieldOfView = (bird, other) => {
 };
 
 // 分離力を計算（視野角を考慮）
-export const calculateSeparation = (bird, neighbors) => {
+export const calculateSeparation = (bird: Bird, neighbors: Bird[]): Vector => {
   let fx = 0, fy = 0, count = 0;
   neighbors.forEach(other => {
     if (isInFieldOfView(bird, other)) {
@@ -62,7 +86,7 @@ export const calculateSeparation = (bird, neighbors) => {
 };
 
 // 整列力を計算（視野角を考慮）
-export const calculateAlignment = (bird, neighbors) => {
+export const calculateAlignment = (bird: Bird, neighbors: Bird[]): Vector => {
   let vx = 0, vy = 0, count = 0;
   neighbors.forEach(other => {
     if (isInFieldOfView(bird, other)) {
@@ -86,7 +110,7 @@ export const calculateAlignment = (bird, neighbors) => {
 };
 
 // 結合力を計算（視野角を考慮）
-export const calculateCohesion = (bird, neighbors) => {
+export const calculateCohesion = (bird: Bird, neighbors: Bird[]): Vector => {
   let cx = 0, cy = 0, count = 0;
   neighbors.forEach(other => {
     if (isInFieldOfView(bird, other)) {
@@ -109,8 +133,8 @@ export const calculateCohesion = (bird, neighbors) => {
 };
 
 export const initializeBirds = (
-  numberOfBirds = 100, width = 800, height = 600) => {
-  const birds = [];
+  numberOfBirds: number = 100, width: number = 800, height: number = 600): Bird[] => {
+  const birds: Bird[] = [];
   for (let i = 0; i < numberOfBirds; i++) {
     birds.push({
       x: Math.random() * (width - 10) + 5,
@@ -123,7 +147,7 @@ export const initializeBirds = (
   return birds;
 };
 
-export const updateMouseBird = (mouseBird, mousePosition) => {
+export const updateMouseBird = (mouseBird: Bird, mousePosition: Vector): void => {
   const dx = mousePosition.x - mouseBird.x;
   const dy = mousePosition.y - mouseBird.y;
   const distance = Math.sqrt(dx * dx + dy * dy);
@@ -135,4 +159,4 @@ export const updateMouseBird = (mouseBird, mousePosition) => {
     mouseBird.y += mouseBird.vy;
     mouseBird.angle = Math.atan2(mouseBird.vy, mouseBird.vx);
   }
-};
+}
