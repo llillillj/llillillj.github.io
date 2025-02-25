@@ -142,24 +142,27 @@
 </template>
 
 
-<script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+// Boidコンポーネント
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import {
   boidParams,
   limitVector,
   calculateSeparation,
   calculateAlignment,
-  calculateCohesion
-} from '@/module/boid'
+  calculateCohesion,
+  initializeBirds,
+  updateMouseBird,
+} from '@/module/boid';
 
-const canvas = ref(null)
-let width = Math.min(800, window.innerWidth * 0.9)
-let height = Math.min(600, window.innerHeight * 0.6)
-const birds = ref([])
-let animationId = null
-const useMouseBird = ref(false)
+const canvas = ref(null);
+let width = Math.min(800, window.innerWidth * 0.9);
+let height = Math.min(600, window.innerHeight * 0.6);
+const birds = ref([]);
+let animationId = null;
+const useMouseBird = ref(false);
 
-const mousePosition = ref({ x: width / 2, y: height / 2})
+const mousePosition = ref({ x: width / 2, y: height / 2 });
 
 // ユーザのマウスに追従する鳥
 const mouseBird = ref({
@@ -167,8 +170,8 @@ const mouseBird = ref({
   y: height / 2,
   vx: 0,
   vy: 0,
-  angle: 0
-})
+  angle: 0,
+});
 
 const handleMouseMove = (event) => {
   const rect = canvas.value.getBoundingClientRect();
@@ -189,31 +192,16 @@ const handleTouchMove = (event) => {
   }
 };
 
-// マウス追従鳥の更新
-const updateMouseBird = () => {
-  const dx = mousePosition.value.x - mouseBird.value.x
-  const dy = mousePosition.value.y - mouseBird.value.y
-  const distance = Math.sqrt(dx * dx + dy * dy)
-
-  if (distance > 1) {
-    mouseBird.value.vx = (dx / distance) * 2.0
-    mouseBird.value.vy = (dy / distance) * 2.0
-    mouseBird.value.x += mouseBird.value.vx
-    mouseBird.value.y += mouseBird.value.vy
-    mouseBird.value.angle = Math.atan2(mouseBird.value.vy, mouseBird.value.vx)
-  }
-}
-
 const displaySettings = ref({
   body: { label: '鳥の体', value: true },
   fieldOfView: { label: '視野角', value: true },
   separationRadius: { label: '分離半径', value: true },
   alignmentRadius: { label: '整列半径', value: true },
-  cohesionRadius: { label: '結合半径', value: true }
-})
+  cohesionRadius: { label: '結合半径', value: true },
+});
 
 // 個体数の初期値とref
-const numberOfBirds = ref(20)
+const numberOfBirds = ref(20);
 
 // スライダーの設定を配列で管理
 const sliders = ref([
@@ -223,7 +211,7 @@ const sliders = ref([
     min: 10,
     max: 100,
     step: 1,
-    key: 'separationDistance'
+    key: 'separationDistance',
   },
   {
     label: '整列半径',
@@ -231,7 +219,7 @@ const sliders = ref([
     min: 10,
     max: 200,
     step: 1,
-    key: 'alignmentDistance'
+    key: 'alignmentDistance',
   },
   {
     label: '結合半径',
@@ -239,7 +227,7 @@ const sliders = ref([
     min: 10,
     max: 300,
     step: 1,
-    key: 'cohesionDistance'
+    key: 'cohesionDistance',
   },
   {
     label: '分離重み',
@@ -247,7 +235,7 @@ const sliders = ref([
     min: 0,
     max: 5,
     step: 0.1,
-    key: 'separationWeight'
+    key: 'separationWeight',
   },
   {
     label: '整列重み',
@@ -255,7 +243,7 @@ const sliders = ref([
     min: 0,
     max: 5,
     step: 0.1,
-    key: 'alignmentWeight'
+    key: 'alignmentWeight',
   },
   {
     label: '結合重み',
@@ -263,7 +251,7 @@ const sliders = ref([
     min: 0,
     max: 5,
     step: 0.1,
-    key: 'cohesionWeight'
+    key: 'cohesionWeight',
   },
   {
     label: '最大速度',
@@ -271,7 +259,7 @@ const sliders = ref([
     min: 1.5,
     max: 5,
     step: 0.1,
-    key: 'maxSpeed'
+    key: 'maxSpeed',
   },
   {
     label: '視野角',
@@ -279,120 +267,147 @@ const sliders = ref([
     min: 0,
     max: 360,
     step: 1,
-    key: 'fieldOfView'
-  }
-])
+    key: 'fieldOfView',
+  },
+]);
 
 // スライダーの値を更新するウォッチャー
-watch(sliders, (newVal) => {
-  newVal.forEach((slider) => {
-    boidParams.value[slider.key] = slider.value
-  })
-}, { deep: true })
-
-// 鳥の初期化を修正
-const initializeBirds = () => {
-  birds.value = []
-  for (let i = 0; i < numberOfBirds.value; i++) {
-    birds.value.push({
-      x: Math.random() * (width - 10) + 5,
-      y: Math.random() * (height - 10) + 5,
-      vx: Math.random() * 2 - 1,
-      vy: Math.random() * 2 - 1,
-      angle: Math.random() * 2 * Math.PI // 鳥の向きを追加
-    })
-  }
-}
+watch(
+  sliders,
+  (newVal) => {
+    newVal.forEach((slider) => {
+      boidParams.value[slider.key] = slider.value;
+    });
+  },
+  { deep: true }
+);
 
 // メインの更新処理
 const updateBirds = () => {
-  birds.value.forEach(bird => {
+  birds.value.forEach((bird) => {
     // const neighbors = birds.value.filter(other => other !== bird)
-    const neighbors = [...birds.value, mouseBird.value].filter(other => other !== bird)
+    const neighbors = [...birds.value, mouseBird.value].filter(
+      (other) => other !== bird
+    );
 
-    const separation = calculateSeparation(bird, neighbors)
-    const alignment = calculateAlignment(bird, neighbors)
-    const cohesion = calculateCohesion(bird, neighbors)
+    const separation = calculateSeparation(bird, neighbors);
+    const alignment = calculateAlignment(bird, neighbors);
+    const cohesion = calculateCohesion(bird, neighbors);
 
-    bird.vx += separation.x + alignment.x + cohesion.x
-    bird.vy += separation.y + alignment.y + cohesion.y
+    bird.vx += separation.x + alignment.x + cohesion.x;
+    bird.vy += separation.y + alignment.y + cohesion.y;
 
-    const limitedVelocity = limitVector(bird.vx, bird.vy, boidParams.value.maxSpeed)
-    bird.vx = limitedVelocity.x
-    bird.vy = limitedVelocity.y
+    const limitedVelocity = limitVector(
+      bird.vx,
+      bird.vy,
+      boidParams.value.maxSpeed
+    );
+    bird.vx = limitedVelocity.x;
+    bird.vy = limitedVelocity.y;
 
-    bird.x += bird.vx / 2
-    bird.y += bird.vy / 2
+    bird.x += bird.vx / 2;
+    bird.y += bird.vy / 2;
 
     // 鳥の角度を更新
-    bird.angle = Math.atan2(bird.vy, bird.vx)
+    bird.angle = Math.atan2(bird.vy, bird.vx);
 
-    bird.x = (bird.x + width) % width
-    bird.y = (bird.y + height) % height
-  })
+    bird.x = (bird.x + width) % width;
+    bird.y = (bird.y + height) % height;
+  });
   if (useMouseBird.value) {
-    updateMouseBird()
+    updateMouseBird(mouseBird.value, mousePosition.value); // モジュール化された関数を使用
   }
-}
+};
 
 const drawMouseBird = () => {
-  const ctx = canvas.value.getContext('2d')
-  ctx.fillStyle = 'red'
-  ctx.beginPath()
-  ctx.arc(mouseBird.value.x, mouseBird.value.y, 10, 0, 2 * Math.PI)
-  ctx.fill()
-}
+  const ctx = canvas.value.getContext('2d');
+  ctx.fillStyle = 'red';
+  ctx.beginPath();
+  ctx.arc(mouseBird.value.x, mouseBird.value.y, 10, 0, 2 * Math.PI);
+  ctx.fill();
+};
 
 // 鳥の描画
 const drawBird = (bird) => {
-  const ctx = canvas.value.getContext('2d')
-  const size = 10
+  const ctx = canvas.value.getContext('2d');
+  const size = 10;
 
   // 鳥の体を描画
   if (displaySettings.value.body.value) {
-    ctx.fillStyle = 'orange'
-    ctx.beginPath()
-    ctx.moveTo(bird.x + Math.cos(bird.angle) * size, bird.y + Math.sin(bird.angle) * size)
-    ctx.lineTo(bird.x + Math.cos(bird.angle + Math.PI * 2.5 / 3) * size, bird.y + Math.sin(bird.angle + Math.PI * 2.5 / 3) * size)
-    ctx.lineTo(bird.x + Math.cos(bird.angle - Math.PI * 2.5 / 3) * size, bird.y + Math.sin(bird.angle - Math.PI * 2.5 / 3) * size)
-    ctx.closePath()
-    ctx.fill()
+    ctx.fillStyle = 'orange';
+    ctx.beginPath();
+    ctx.moveTo(
+      bird.x + Math.cos(bird.angle) * size,
+      bird.y + Math.sin(bird.angle) * size
+    );
+    ctx.lineTo(
+      bird.x + Math.cos(bird.angle + (Math.PI * 2.5) / 3) * size,
+      bird.y + Math.sin(bird.angle + (Math.PI * 2.5) / 3) * size
+    );
+    ctx.lineTo(
+      bird.x + Math.cos(bird.angle - (Math.PI * 2.5) / 3) * size,
+      bird.y + Math.sin(bird.angle - (Math.PI * 2.5) / 3) * size
+    );
+    ctx.closePath();
+    ctx.fill();
   }
 
   // 視野角を描画
   if (displaySettings.value.fieldOfView.value) {
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)'
-    ctx.beginPath()
-    ctx.moveTo(bird.x, bird.y)
-    ctx.arc(bird.x, bird.y, size * 3, bird.angle - (boidParams.value.fieldOfView / 2) * (Math.PI / 180), bird.angle + (boidParams.value.fieldOfView / 2) * (Math.PI / 180))
-    ctx.closePath()
-    ctx.stroke()
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.beginPath();
+    ctx.moveTo(bird.x, bird.y);
+    ctx.arc(
+      bird.x,
+      bird.y,
+      size * 3,
+      bird.angle - (boidParams.value.fieldOfView / 2) * (Math.PI / 180),
+      bird.angle + (boidParams.value.fieldOfView / 2) * (Math.PI / 180)
+    );
+    ctx.closePath();
+    ctx.stroke();
   }
 
   // 分離半径を描画
   if (displaySettings.value.separationRadius.value) {
-    ctx.strokeStyle = 'rgba(255, 100, 100, 0.2)'
-    ctx.beginPath()
-    ctx.arc(bird.x, bird.y, boidParams.value.separationDistance, 0, 2 * Math.PI)
-    ctx.stroke()
+    ctx.strokeStyle = 'rgba(255, 100, 100, 0.2)';
+    ctx.beginPath();
+    ctx.arc(
+      bird.x,
+      bird.y,
+      boidParams.value.separationDistance,
+      0,
+      2 * Math.PI
+    );
+    ctx.stroke();
   }
-
   // 整列半径を描画
   if (displaySettings.value.alignmentRadius.value) {
-    ctx.strokeStyle = 'rgba(100, 255, 100, 0.2)'
-    ctx.beginPath()
-    ctx.arc(bird.x, bird.y, boidParams.value.alignmentDistance, 0, 2 * Math.PI)
-    ctx.stroke()
+    ctx.strokeStyle = 'rgba(100, 255, 100, 0.2)';
+    ctx.beginPath();
+    ctx.arc(
+      bird.x,
+      bird.y,
+      boidParams.value.alignmentDistance,
+      0,
+      2 * Math.PI
+    );
+    ctx.stroke();
   }
   // 結合半径を描画
   if (displaySettings.value.cohesionRadius.value) {
-    ctx.strokeStyle = 'rgba(100, 100, 255, 0.2)'
-    ctx.beginPath()
-    ctx.arc(bird.x, bird.y, boidParams.value.cohesionDistance, 0, 2 * Math.PI)
-    ctx.stroke()
+    ctx.strokeStyle = 'rgba(100, 100, 255, 0.2)';
+    ctx.beginPath();
+    ctx.arc(
+      bird.x,
+      bird.y,
+      boidParams.value.cohesionDistance,
+      0,
+      2 * Math.PI
+    );
+    ctx.stroke();
   }
-}
-
+};
 
 // 群れの描画
 const drawBirds = () => {
@@ -402,59 +417,61 @@ const drawBirds = () => {
   ctx.clearRect(0, 0, width, height);
 
   // 鳥を描画
-  birds.value.forEach(bird => {
+  birds.value.forEach((bird) => {
     drawBird(bird); // 鳥ごとに描画
   });
   if (useMouseBird.value) {
-    drawMouseBird()
+    drawMouseBird();
   }
 };
 
-
 // アニメーション
 const animate = () => {
-  updateBirds()
-  drawBirds()
-  animationId = requestAnimationFrame(animate)
-}
+  updateBirds();
+  drawBirds();
+  animationId = requestAnimationFrame(animate);
+};
 
 // アニメーションの開始と停止
 const startAnimation = () => {
   if (!animationId) {
-    animate()
+    animate();
   }
-}
+};
 
 const stopAnimation = () => {
   if (animationId) {
-    cancelAnimationFrame(animationId)
-    animationId = null
+    cancelAnimationFrame(animationId);
+    animationId = null;
   }
-}
+};
 
 const handleResize = () => {
-    width = Math.min(800, window.innerWidth * 0.9)
-    height = Math.min(600, window.innerHeight * 0.6)
-  };
+  width = Math.min(800, window.innerWidth * 0.9);
+  height = Math.min(600, window.innerHeight * 0.6);
+};
 
 // 個体数が変更されたときに鳥を再初期化するウォッチャー
 watch(numberOfBirds, () => {
-  initializeBirds()
-})
+  birds.value = initializeBirds(numberOfBirds.value, width, height); // モジュール化された関数を使用
+});
 
 // ライフサイクルメソッド
 onMounted(() => {
-  initializeBirds()
-  startAnimation()
-  canvas.value.addEventListener('mousemove', handleMouseMove)
-  canvas.value.addEventListener('touchmove', handleTouchMove, { passive: false })
-  window.addEventListener("resize", handleResize);
-})
+  birds.value = initializeBirds(numberOfBirds.value, width, height); // モジュール化された関数を使用
+  startAnimation();
+  canvas.value.addEventListener('mousemove', handleMouseMove);
+  canvas.value.addEventListener('touchmove', handleTouchMove, {
+    passive: false,
+  });
+  window.addEventListener('resize', handleResize);
+});
 
 onUnmounted(() => {
-  stopAnimation()
-  canvas.value.removeEventListener('mousemove', handleMouseMove)
-  canvas.value.removeEventListener('touchmove', handleTouchMove)
-  window.removeEventListener("resize", handleResize);
-})
+  stopAnimation();
+  canvas.value.removeEventListener('mousemove', handleMouseMove);
+  canvas.value.removeEventListener('touchmove', handleTouchMove);
+  window.removeEventListener('resize', handleResize);
+});
 </script>
+

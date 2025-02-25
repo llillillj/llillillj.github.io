@@ -107,3 +107,32 @@ export const calculateCohesion = (bird, neighbors) => {
   }
   return { x: cx, y: cy };
 };
+
+export const initializeBirds = (
+  numberOfBirds = 100, width = 800, height = 600) => {
+  const birds = [];
+  for (let i = 0; i < numberOfBirds; i++) {
+    birds.push({
+      x: Math.random() * (width - 10) + 5,
+      y: Math.random() * (height - 10) + 5,
+      vx: Math.random() * 2 - 1,
+      vy: Math.random() * 2 - 1,
+      angle: Math.random() * 2 * Math.PI, // 鳥の向きを追加
+    });
+  }
+  return birds;
+};
+
+export const updateMouseBird = (mouseBird, mousePosition) => {
+  const dx = mousePosition.x - mouseBird.x;
+  const dy = mousePosition.y - mouseBird.y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  if (distance > 1) {
+    mouseBird.vx = (dx / distance) * 2.0;
+    mouseBird.vy = (dy / distance) * 2.0;
+    mouseBird.x += mouseBird.vx;
+    mouseBird.y += mouseBird.vy;
+    mouseBird.angle = Math.atan2(mouseBird.vy, mouseBird.vx);
+  }
+};
