@@ -2,7 +2,7 @@
   <q-page padding class="home flex flex-center">
     <div class="q-gutter-md flex flex-center">
       <div class="text-content text-left q-pa-md q-gutter-y-md" style="overflow-y: initial;">
-        <p class="text-h4">Akiyuki Kouyama</p>
+        <p class="text-h4">Akiyuki Koyama</p>
         <div>
           <p class="text-h5">所属</p>
           <li class="text-subtitle1"><a href="https://www.u-hyogo.ac.jp/sis/" target="_blank" rel="noopener noreferrer" style="color: skyblue;">兵庫県立大学 社会情報科学部</a></li>
@@ -54,7 +54,7 @@
 
 <script lang="ts">
 export default {
-  name: 'KouyamaPortfolio',
+  name: 'KoyamaPortfolio',
   components: {
   }
 }
