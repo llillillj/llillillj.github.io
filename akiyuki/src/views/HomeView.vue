@@ -71,7 +71,13 @@
                 <td>2024</td>
                 <td>開発</td>
                 <td>受託</td>
-                <td><a href="https://www.dakken.co.jp/" target="_blank" rel="noopener noreferrer">合同会社DA研</a>でゲートキーパー手帳用アプリの開発</td>
+                <td><a href="https://www.dakken.co.jp/" target="_blank" rel="noopener noreferrer">合同会社DA研</a>で<a href="https://akashi-mental-health.com" target="_blank" rel="noopener noreferrer">ゲートキーパー手帳用アプリ</a>の開発</td>
+              </tr>
+              <tr>
+                <td>2025</td>
+                <td>研究</td>
+                <td>卒業研究</td>
+                <td><a href="https://www.ipsj.or.jp/event/taikai/87/WEB/data/pdf/5W-01.html" target="_blank" rel="noopener noreferrer">IPSJ第87回全国大会</a>での発表</td>
               </tr>
               <tr>
                 <td>2025</td>
