@@ -1,11 +1,13 @@
-import { createApp } from "vue";
-import App from "./App.vue";
-import router from "./router";
-import { Quasar } from "quasar";
-import quasarUserOptions from "./quasar-user-options";
+import { createApp } from "vue"
+import App from "./App.vue"
+import router from "./router"
+import { Quasar } from "quasar"
+import quasarUserOptions from "./quasar-user-options"
 
-const vueObj = createApp(App);
+import "./styles/fonts.sass"
 
-vueObj.use(Quasar, quasarUserOptions);
-vueObj.use(router);
-vueObj.mount("#app");
+const vueObj = createApp(App)
+
+vueObj.use(Quasar, quasarUserOptions)
+vueObj.use(router)
+vueObj.mount("#app")
