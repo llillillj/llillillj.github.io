@@ -6,7 +6,8 @@
         <q-separator color="grey-10" />
         <div>
           <p class="text-h5">所属</p>
-          <li class="text-subtitle1"><a href="https://u-hyogo.info/" target="_blank" rel="noopener noreferrer">兵庫県立大学大学院 情報科学研究科 データ計算科学専攻</a></li>
+          <!-- <li class="text-subtitle1"><a href="https://u-hyogo.info/" target="_blank" rel="noopener noreferrer">兵庫県立大学大学院 情報科学研究科 データ計算科学専攻</a></li> -->
+          <li class="text-subtitle1">兵庫県立大学大学院 情報科学研究科 データ計算科学専攻</li>
           <li class="text-subtitle1"><a href="https://interaction-lab.org/ja/" target="_blank" rel="noopener noreferrer">川嶋研究室</a> 所属</li>
           <li class="text-subtitle1"><a href="https://www.dakken.co.jp/" target="_blank" rel="noopener noreferrer">合同会社DA研</a></li>
         </div>
