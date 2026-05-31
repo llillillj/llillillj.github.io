@@ -2,7 +2,7 @@
   <q-page padding class="home flex flex-center">
     <div class="q-gutter-md flex flex-center">
       <div class="text-content text-left q-pa-md q-gutter-y-xl" style="overflow-y: initial;">
-        <p class="text-h4">Akiyuki Koyama</p>
+        <p class="text-h4">香山明之 / Akiyuki Koyama</p>
         <q-separator color="grey-10" />
         <div>
           <p class="text-h5">所属</p>
@@ -112,7 +112,7 @@
       </div>
     </div>
     <q-footer class="semi-transparent-bg bg-black">
-        <div class="text-caption text-center">© 2025 Akiyuki Koyama / ad25u022@guh.u-hyogo.ac.jp</div>
+        <div class="text-caption text-center">© 2025 香山明之 / Akiyuki Koyama / ad25u022@guh.u-hyogo.ac.jp</div>
     </q-footer>
   </q-page>
 </template>
