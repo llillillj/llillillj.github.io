@@ -41,7 +41,7 @@
                 <td>2022</td>
                 <td>分析</td>
                 <td>コンペ</td>
-                <td><a href="https://www.kaggle.com/akiyukikouyama/code" target="_blank" rel="noopener noreferrer">Kaggle notebook expert</a>への昇格</td>
+                <td><a href="https://www.kaggle.com/akiyukikouyama/code" target="_blank" rel="noopener noreferrer">Kaggle Notebook Expert</a>への昇格</td>
               </tr>
               <tr>
                 <td>2023</td>
@@ -77,7 +77,7 @@
               <tr>
                 <td>2025</td>
                 <td>研究</td>
-                <td>卒業研究</td>
+                <td>卒論</td>
                 <td><a href="https://www.ipsj.or.jp/event/taikai/87/WEB/data/pdf/5W-01.html" target="_blank" rel="noopener noreferrer">IPSJ第87回全国大会</a>での発表</td>
               </tr>
               <tr>
@@ -85,6 +85,18 @@
                 <td>開発</td>
                 <td>バイト</td>
                 <td>AutoCADの図形保存・解析・描画の自動化API開発</td>
+              </tr>
+              <tr>
+                <td>2026</td>
+                <td>研究</td>
+                <td>卒論+α</td>
+                <td>31st International Symposium on Artificial Life and Robotics (AROB 31st 2026)(ISBCと併催)にて発表</td>
+              </tr>
+              <tr>
+                <td>2026</td>
+                <td>資格</td>
+                <td>修了</td>
+                <td>Google AI Professional Certificate</td>
               </tr>
             </tbody>
           </table>
