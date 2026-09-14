@@ -72,13 +72,13 @@
                 <td>2024</td>
                 <td>開発</td>
                 <td>受託</td>
-                <td><a href="https://www.dakken.co.jp/" target="_blank" rel="noopener noreferrer">合同会社DA研</a>で<a href="https://akashi-mental-health.com" target="_blank" rel="noopener noreferrer">ゲートキーパー手帳用アプリ</a>の開発</td>
+                <td><a href="https://www.dakken.co.jp/" target="_blank" rel="noopener noreferrer">合同会社DA研</a>で<a href="https://akashi-mental-health.com" target="_blank" rel="noopener noreferrer">メンタルヘルスアプリ</a>の開発</td>
               </tr>
               <tr>
                 <td>2025</td>
                 <td>研究</td>
                 <td>卒論</td>
-                <td><a href="https://www.ipsj.or.jp/event/taikai/87/WEB/data/pdf/5W-01.html" target="_blank" rel="noopener noreferrer">IPSJ第87回全国大会</a>での発表</td>
+                <td>「磁気式アクチュエータを用いた魚型ロボットのデータ駆動制御」というテーマで『<a href="https://www.ipsj.or.jp/event/taikai/87/WEB/data/pdf/5W-01.html" target="_blank" rel="noopener noreferrer">IPSJ第87回全国大会</a>』にて発表</td>
               </tr>
               <tr>
                 <td>2025</td>
@@ -90,13 +90,19 @@
                 <td>2026</td>
                 <td>研究</td>
                 <td>卒論+α</td>
-                <td>31st International Symposium on Artificial Life and Robotics (AROB 31st 2026)(ISBCと併催)にて発表</td>
+                <td>主著として執筆した論文「<a href="https://arxiv.org/abs/2603.04787" target="_blank" rel="noopener noreferrer">Data-Driven Control of a Magnetically Actuated Fish-Like Robot</a>」を『31st International Symposium on Artificial Life and Robotics (AROB 31st 2026)(ISBCと併催)』にて発表</td>
               </tr>
               <tr>
                 <td>2026</td>
                 <td>資格</td>
                 <td>修了</td>
-                <td>Google AI Professional Certificate</td>
+                <td><a href="https://www.coursera.org/professional-certificates/google-ai" target="_blank" rel="noopener noreferrer">Google AI Professional Certificate</a></td>
+              </tr>
+              <tr>
+                <td>2026</td>
+                <td>研究</td>
+                <td>共著</td>
+                <td>Formal analysis（データ解析）の担当者として貢献した論文「<a href="https://www.sciencedirect.com/science/article/abs/pii/S0376635726001014" target="_blank" rel="noopener noreferrer">Speed-controlled visual stimuli modulate fish collective dynamics</a>」が学術誌『Behavioural Processes』に掲載</td>
               </tr>
             </tbody>
           </table>
