@@ -53,22 +53,6 @@
             <q-item-label>Kaggle</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://twitter.com/llillillillj">
-          <q-item-section avatar>
-            <q-icon name="rss_feed" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>X (Twitter)</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://www.uoh-dakken.com/">
-          <q-item-section avatar>
-            <q-icon name="groups" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>ClubActivity</q-item-label>
-          </q-item-section>
-        </q-item>
       </q-list>
     </q-drawer>
 
