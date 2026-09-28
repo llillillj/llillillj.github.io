@@ -11,8 +11,8 @@
 </p>
 
 ## Stats
-![](http://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=llillillj&theme=2077)
-![](http://github-profile-summary-cards.vercel.app/api/cards/repos-per-language?username=llillillj&theme=2077)
-![](http://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=llillillj&theme=2077)
-![](http://github-profile-summary-cards.vercel.app/api/cards/stats?username=llillillj&theme=2077)
-![](http://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=llillillj&theme=2077&utcOffset=9)
+![](./output/llillillj/profile-details.svg)
+![](./output/llillillj/repos-per-language.svg)
+![](./output/llillillj/most-commit-language.svg)
+![](./output/llillillj/stats.svg)
+![](./output/llillillj/productive-time.svg)
