@@ -16,6 +16,3 @@
 ![](http://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=llillillj&theme=2077)
 ![](http://github-profile-summary-cards.vercel.app/api/cards/stats?username=llillillj&theme=2077)
 ![](http://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=llillillj&theme=2077&utcOffset=9)
-
-## Trophy
-![trophy](https://github-profile-trophy.vercel.app/?username=llillillj&theme=gruvbox)
