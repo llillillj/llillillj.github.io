@@ -7,10 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v3
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
         with:
-          node-version: '18.x'
+          node-version: '20.x'
       - name: Install dependencies
         working-directory: ./akiyuki
         run: npm ci || npm install --legacy-peer-deps
@@ -28,8 +28,13 @@ jobs:
           cp ./docs/index.html ./docs/boid-algorithm
       - name: Commit and push changes
         run: |
-          git config --global user.name 'GitHub Actions'
-          git config --global user.email 'github-actions@github.com'
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@github.com"
           git add .
-          git commit -m "Automated changes by GitHub Actions"
-          git push
+
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit."
+          else
+            git commit -m "Automated changes by GitHub Actions"
+            git push
+          fi
